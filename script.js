@@ -1,84 +1,98 @@
-// ======== قاعدة البيانات (حفظ في المتصفح) ========
+// ======== 1. قاعدة البيانات (تخزين في المتصفح) ========
 let usersData = JSON.parse(localStorage.getItem('chatUsers')) || {}; 
-let username = '';
-let coins = 0;
+let currentUser = null;
 
-// ======== وظائف تسجيل الدخول ========
+// ======== 2. وظائف الحسابات ========
 
-// 1. إنشاء حساب
 function createAccount() {
-    const userInput = prompt('اكتب اسم المستخدم الجديد:');
-    if(!userInput) return;
-    if(usersData[userInput]) return alert('الاسم مستخدم بالفعل');
-    const passInput = prompt('اكتب كلمة المرور:');
-    if(!passInput) return;
+    // 1. طلب الاسم
+    let name = prompt("اكتب اسم المستخدم الجديد:");
+    if (!name) return; // لو داس إلغاء
+    if (usersData[name]) return alert("الاسم ده محجوز، جرب اسم تاني!");
 
-    usersData[userInput] = {
-        password: passInput, 
-        rank: 'مبتدئ', 
-        badges: [], 
-        coins: 1000, 
-        bio: 'أنا مستخدم جديد', 
-        profilePic: '', 
-        friends: []
+    // 2. طلب الباسورد
+    let pass = prompt("اكتب كلمة المرور:");
+    if (!pass) return;
+
+    // 3. حفظ البيانات
+    usersData[name] = { 
+        password: pass, 
+        coins: 1000 // هدية 1000 كوينز
     };
     
-    // حفظ في ذاكرة المتصفح
+    // حفظ في الذاكرة الدائمة
     localStorage.setItem('chatUsers', JSON.stringify(usersData));
-    alert('تم إنشاء الحساب بنجاح! جرب تسجل دخول دلوقتي.');
+    alert("جدع تم إنشاء الحساب يوحش دوس على (دخول) دلوقتي .");
 }
 
-// 2. تسجيل الدخول
 function login() {
-    const userInput = document.getElementById('username').value.trim();
-    const passInput = document.getElementById('password').value.trim();
+    // قراءة البيانات من الخانات
+    let nameInput = document.getElementById("username-input").value;
+    let passInput = document.getElementById("password-input").value;
+
+    // التحقق
+    if (!nameInput || !passInput) return alert("اكتب الاسم والباسورد!");
     
-    if(!userInput || !passInput){ alert('اكتب اسمك وكلمة المرور'); return; }
-    if(!usersData[userInput]) { alert('الحساب غير موجود.. اضغط على إنشاء حساب أولاً'); return; }
-    if(usersData[userInput].password !== passInput){ alert('كلمة المرور خطأ'); return; }
-
-    username = userInput;
-    coins = usersData[username].coins;
-    startSession();
-}
-
-// 3. دخول زائر
-function guestLogin() {
-    username = 'زائر_' + Math.floor(Math.random() * 1000);
-    coins = 0;
-    startSession();
-}
-
-// ======== تشغيل الموقع بعد الدخول ========
-function startSession() {
-    // إظهار وإخفاء الشاشات
-    const loginScreen = document.getElementById('login-screen');
-    const appContent = document.getElementById('app-content');
-    
-    if(loginScreen) loginScreen.style.display = 'none';
-    if(appContent) {
-        appContent.style.display = 'block';
-        appContent.classList.remove('hidden'); // احتياطاً لو مستخدم CSS
+    if (!usersData[nameInput]) {
+        return alert("الحساب غير موجود! دوس على (إنشاء حساب) الأول.");
     }
+
+    if (usersData[nameInput].password !== passInput) {
+        return alert("كلمة المرور غلط!");
+    }
+
+    // نجاح الدخول
+    currentUser = nameInput;
+    startApp();
+}
+
+// ======== 3. تشغيل الموقع ========
+
+function startApp() {
+    // إخفاء شاشة الدخول
+    document.getElementById("login-screen").classList.add("hidden");
     
-    // تحديث البيانات المعروضة
-    updateCoinsDisplay();
-    renderProfile();
-    alert('منور الموقع يا ' + username);
+    // إظهار الشات
+    document.getElementById("main-app").classList.remove("hidden");
+    
+    // عرض البيانات
+    document.getElementById("display-name").innerText = currentUser;
+    updateCoins();
+
+    // تشغيل عداد الكوينز (بيزيد 100 كل دقيقة)
+    setInterval(function() {
+        usersData[currentUser].coins += 100;
+        localStorage.setItem('chatUsers', JSON.stringify(usersData));
+        updateCoins();
+    }, 60000);
 }
 
-function updateCoinsDisplay() {
-    const el = document.getElementById('coins-display');
-    if(el) el.innerText = 'الكوينز: ' + coins;
+function updateCoins() {
+    document.getElementById("coins-display").innerText = usersData[currentUser].coins;
 }
 
-function renderProfile() {
-    if(document.getElementById('profile-name')) document.getElementById('profile-name').innerText = username;
-    if(document.getElementById('profile-rank')) document.getElementById('profile-rank').innerText = usersData[username]?.rank || 'زائر';
-    if(document.getElementById('profile-coins')) document.getElementById('profile-coins').innerText = 'رصيدك: ' + coins;
+function logout() {
+    location.reload(); // إعادة تحميل الصفحة للخروج
 }
 
-// دالة المتجر البسيطة للتجربة
-function openShop() {
-    alert('المتجر سيتم تفعيله قريباً.. رصيدك الحالي: ' + coins);
+// ======== 4. الشات ========
+
+function sendMessage() {
+    let input = document.getElementById("msg-input");
+    let text = input.value;
+    
+    if (text === "") return; // لو فاضي متبعتش حاجة
+
+    let chatBox = document.getElementById("chat-box");
+    
+    // إنشاء رسالة جديدة
+    let newMsg = document.createElement("div");
+    newMsg.className = "msg";
+    newMsg.innerHTML = `<span class="username">${currentUser}:</span> ${text}`;
+    
+    chatBox.appendChild(newMsg);
+    
+    // تنظيف الخانة والنزول لتحت
+    input.value = "";
+    chatBox.scrollTop = chatBox.scrollHeight;
 }
