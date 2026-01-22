@@ -1,0 +1,102 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #121212;
+    color: #e0e0e0;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+header {
+    background-color: #1f1f1f;
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+header h1 {
+    margin: 0;
+}
+
+.user-login input {
+    padding: 5px;
+    margin-right: 5px;
+}
+
+.user-login button {
+    padding: 5px 10px;
+    margin-left: 5px;
+    cursor: pointer;
+}
+
+#coins-display {
+    margin-left: 10px;
+    font-weight: bold;
+}
+
+main {
+    display: flex;
+    flex: 1;
+}
+
+.sidebar {
+    width: 220px;
+    background-color: #1a1a1a;
+    padding: 10px;
+}
+
+.sidebar ul {
+    list-style: none;
+    padding: 0;
+}
+
+.sidebar li {
+    padding: 8px;
+    cursor: pointer;
+}
+
+.sidebar li:hover {
+    background-color: #333;
+}
+
+.chat-area {
+    flex: 2;
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+}
+
+.messages {
+    flex: 1;
+    overflow-y: auto;
+    border: 1px solid #333;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+#chat-input {
+    width: calc(100% - 80px);
+    padding: 5px;
+}
+
+.chat-area button {
+    padding: 5px 10px;
+    margin-left: 5px;
+    cursor: pointer;
+}
+
+.profile-area {
+    flex: 1;
+    background-color: #1f1f1f;
+    padding: 10px;
+}
+.profile-area img {
+    display: block;
+    margin-bottom: 5px;
+}
