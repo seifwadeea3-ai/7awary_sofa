@@ -1,89 +1,78 @@
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>موقع الشات العربي |حواري سوفا</title>
-    <link rel="stylesheet" href="style.css">
-    <style>
-        /* تنسيقات سريعة لضمان عمل الواجهة */
-        body { font-family: Arial, sans-serif; background-color: #1a1a1a; color: white; text-align: center; }
-        .container { max-width: 600px; margin: auto; padding: 20px; }
-        .hidden { display: none !important; }
-        input, button { padding: 10px; margin: 5px; border-radius: 5px; border: none; }
-        button { background-color: #28a745; color: white; cursor: pointer; }
-        button:hover { background-color: #218838; }
-        .section { background: #2d2d2d; padding: 15px; border-radius: 10px; margin-top: 20px; }
-        #chat-messages { height: 200px; overflow-y: auto; background: #000; padding: 10px; text-align: right; border: 1px solid #444; }
-        .user-bar { display: flex; justify-content: space-around; background: #444; padding: 10px; border-radius: 5px; }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <div id="login-screen">
-            <h1>موقع الشات العربي</h1>
-            <div class="user-login">
-                <input type="text" id="username" placeholder="اسم المستخدم">
-                <input type="password" id="password" placeholder="كلمة المرور">
-                <br>
-                <button onclick="login()">دخول</button>
-                <button onclick="guestLogin()">حساب زائر</button>
-                <button onclick="createAccount()">إنشاء حساب جديد</button>
-            </div>
-        </div>
+// ======== بيانات المستخدمين والجروبات ========
+let username = '';
+let coins = 0;
+let currentGroup = null;
+let groups = {};
+let usersData = JSON.parse(localStorage.getItem('chatUsers')) || {}; 
+let messages = {};
 
-        <div id="app-content" class="hidden">
-            <div class="user-bar">
-                <span id="display-username"></span>
-                <span id="coins-display">الكوينز: 0</span>
-            </div>
-            
-            <div class="section">
-                <button onclick="openShop()">المتجر 🛒</button>
-                <button onclick="openDailyEvents()">الفعاليات 🎁</button>
-                <button onclick="editProfile()">تعديل البروفايل 👤</button>
-            </div>
+const ranksGeneral = {
+    'برونزي': {color: 'green', price: 3000, coinsPerHour: 1000},
+    'فضي': {color: 'blue', price: 8000, coinsPerHour: 2000},
+    'ذهبي': {color: 'gold', price: 20000, coinsPerHour: 3000}
+};
 
-            <div class="section">
-                <h3>الملف الشخصي</h3>
-                <img id="profile-pic" src="" alt="صورة" style="width:60px; height:60px; border-radius:50%; background:#eee;">
-                <p>الرتبة: <span id="profile-rank"></span></p>
-                <p>الأوسمة: <span id="profile-badges"></span></p>
-                <p id="profile-coins"></p>
-                <p id="profile-bio"></p>
-            </div>
+// ======== وظائف تسجيل الدخول ========
+function login() {
+    const userInput = document.getElementById('username').value.trim();
+    const passInput = document.getElementById('password').value.trim();
+    
+    if(!userInput || !passInput){ alert('اكتب اسم وكلمة المرور'); return; }
+    if(!usersData[userInput]) { alert('الحساب غير موجود.. أنشئ حساب أولاً'); return; }
+    if(usersData[userInput].password !== passInput){ alert('كلمة المرور خطأ'); return; }
 
-            <div class="section">
-                <h3>الجروبات</h3>
-                <button onclick="createGroup()">إنشاء جروب جديد</button>
-                <ul id="group-list" style="list-style:none; padding:0;"></ul>
-            </div>
+    username = userInput;
+    coins = usersData[username].coins || 0;
+    startSession();
+}
 
-            <div class="section">
-                <h3 id="chat-title">اختر جروب للدردشة</h3>
-                <div id="chat-messages"></div>
-                <input type="text" id="chat-input" placeholder="اكتب هنا..." style="width:70%;">
-                <button onclick="sendMessage()">إرسال</button>
-                <div id="group-controls"></div>
-            </div>
-        </div>
-    </div>
+function createAccount() {
+    const userInput = prompt('اكتب اسم المستخدم الجديد:');
+    if(!userInput) return;
+    if(usersData[userInput]) return alert('الاسم مستخدم بالفعل');
+    const passInput = prompt('اكتب كلمة المرور:');
+    if(!passInput) return;
 
-    <script>
-        // هذا الكود يراقب الدالة startSession في ملفك ويشغل الواجهة فور نجاحها
-        window.addEventListener('load', () => {
-            const oldStartSession = window.startSession;
-            window.startSession = function() {
-                if(oldStartSession) oldStartSession();
-                document.getElementById('login-screen').classList.add('hidden');
-                document.getElementById('app-content').classList.remove('hidden');
-                if(document.getElementById('display-username')) {
-                    document.getElementById('display-username').innerText = "أهلاً: " + (window.username || "مستخدم");
-                }
-            };
-        });
-    </script>
-    <script src="script.js"></script>
-</body>
-</html>
+    usersData[userInput] = {
+        password: passInput, 
+        rank: null, 
+        badges: [], 
+        coins: 1000, // هدية تسجيل
+        bio: '', 
+        profilePic: '', 
+        friends: []
+    };
+    
+    localStorage.setItem('chatUsers', JSON.stringify(usersData));
+    alert('تم إنشاء الحساب بنجاح! يمكنك الدخول الآن.');
+}
 
+function guestLogin() {
+    username = 'زائر_' + Math.floor(Math.random() * 1000);
+    coins = 0;
+    startSession();
+}
+
+// ======== بدء الجلسة ========
+function startSession() {
+    // إخفاء شاشة الدخول وإظهار الموقع
+    const loginScreen = document.getElementById('login-screen');
+    const appContent = document.getElementById('app-content');
+    
+    if(loginScreen) loginScreen.style.display = 'none';
+    if(appContent) appContent.style.display = 'block';
+    
+    updateCoinsDisplay();
+    renderProfile();
+    alert('أهلاً بك يا ' + username);
+}
+
+function updateCoinsDisplay() {
+    const el = document.getElementById('coins-display');
+    if(el) el.innerText = 'الكوينز: ' + coins;
+}
+
+function renderProfile() {
+    if(document.getElementById('profile-name')) document.getElementById('profile-name').innerText = username;
+    if(document.getElementById('profile-coins')) document.getElementById('profile-coins').innerText = 'الكوينز: ' + coins;
+}
