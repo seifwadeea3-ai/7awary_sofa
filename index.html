@@ -8,7 +8,7 @@
 </head>
 <body>
     <div class="container">
-        <header>
+        <header id="login-header">
             <h1>موقع الشات</h1>
             <div class="user-login">
                 <input type="text" id="username" placeholder="اسمك">
@@ -18,7 +18,17 @@
                 <button onclick="createAccount()">إنشاء حساب</button>
             </div>
         </header>
+
+        <main id="chat-section" style="display: none;">
+            <div class="user-bar">
+                <span>مرحباً: <b id="display-username"></b></span>
+                <span>العملات: <b id="coins-display">0</b></span>
+            </div>
+            <div id="chat-box">
+                </div>
+        </main>
     </div>
+
     <script src="script.js"></script>
 </body>
 </html>
