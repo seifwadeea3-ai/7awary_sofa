@@ -1,61 +1,24 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>موقع الشات بالعربي</title>
-<link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>موقع الشات العربي</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<div class="container">
-    <header>
-        <h1>موقع الشات</h1>
-        <div class="user-login">
-            <input type="text" id="username" placeholder="اسمك">
-            <input type="password" id="password" placeholder="كلمة المرور">
-            <button onclick="login()">دخول</button>
-            <button onclick="guestLogin()">حساب زائر</button>
-            <button onclick="createAccount()">إنشاء حساب</button>
-            <span id="coins-display"></span>
-        </div>
-    </header>
-
-    <main>
-        <div class="sidebar">
-            <h2>جروباتك</h2>
-            <ul id="group-list"></ul>
-            <button onclick="createGroup()">إنشاء جروب جديد (30,000 كوينز)</button>
-            <h2>المتجر</h2>
-            <button onclick="openShop()">المتجر</button>
-            <h2>الأحداث اليومية</h2>
-            <button onclick="openDailyEvents()">الأحداث اليومية</button>
-        </div>
-
-        <div class="chat-area">
-            <h2 id="chat-title">الجروب: لا يوجد</h2>
-            <div id="chat-messages" class="messages"></div>
-            <input type="text" id="chat-input" placeholder="اكتب رسالتك..." onkeydown="if(event.key==='Enter'){sendMessage()}">
-            <button onclick="sendMessage()">أرسل</button>
-            <div id="group-controls" style="margin-top:10px;"></div>
-        </div>
-
-        <div class="profile-area">
-            <h2>الملف الشخصي</h2>
-            <img id="profile-pic" src="" alt="صورة المستخدم" width="100">
-            <div id="profile-name"></div>
-            <div id="profile-rank"></div>
-            <div id="profile-badges"></div>
-            <div id="profile-coins"></div>
-            <div id="profile-bio"></div>
-            <button onclick="editProfile()">تعديل الملف الشخصي</button>
-            <button onclick="sendCoinsPrompt()">إرسال كوينز</button>
-            <button onclick="viewFriends()">الأصدقاء</button>
-            <button onclick="viewNotifications()">الإشعارات</button>
-        </div>
-    </main>
-</div>
-
-<script src="script.js"></script>
+    <div class="container">
+        <header>
+            <h1>موقع الشات</h1>
+            <div class="user-login">
+                <input type="text" id="username" placeholder="اسمك">
+                <input type="password" id="password" placeholder="كلمة المرور">
+                <button onclick="login()">دخول</button>
+                <button onclick="guestLogin()">حساب زائر</button>
+                <button onclick="createAccount()">إنشاء حساب</button>
+            </div>
+        </header>
+    </div>
+    <script src="script.js"></script>
 </body>
 </html>
-
