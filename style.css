@@ -191,3 +191,24 @@ aside {
     background: var(--bg-main) !important;
     z-index: 10000 !important;
 }
+
+/* 1. منع الرسائل من الخروج عن حدود الشات */
+.msg-bubble {
+    word-wrap: break-word !important; /* بيخلي الكلمات الطويلة تنزل سطر جديد */
+    overflow-wrap: break-word !important;
+    max-width: 85% !important; /* بيضمن إنها متخبطش في القوائم */
+}
+
+/* 2. تثبيت القائمة الجانبية (المتواجدون حالياً) */
+aside {
+    position: relative !important;
+    z-index: 2000 !important; /* بيخلي القائمة دايماً فوق أي رسالة */
+    background: var(--bg-secondary) !important;
+    height: 100vh !important;
+}
+
+/* 3. ضمان إن منطقة الرسايل تحت القوائم */
+.view-section {
+    z-index: 1000 !important;
+    overflow: hidden !important;
+}
