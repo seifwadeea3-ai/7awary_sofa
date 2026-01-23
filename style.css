@@ -155,3 +155,37 @@ aside {
 
 @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+/* 1. حل مشكلة الضغط على الاسم */
+.msg-header {
+    position: relative !important;
+    z-index: 1000 !important; /* بيخلي الاسم فوق الفقاعة */
+    pointer-events: auto !important; /* بيخلي المتصفح يستجيب للمس */
+}
+
+.msg-header span {
+    cursor: pointer !important;
+    display: inline-block;
+}
+
+/* 2. حل مشكلة البار اللي بيختفي */
+.view-section {
+    display: flex;
+    flex-direction: column;
+    height: 100vh; /* بيخلي الشاشة كاملة ثابتة */
+}
+
+.chat-messages {
+    flex: 1; /* بيخلي الرسايل تاخد المساحة وتعمل سكرول */
+    overflow-y: auto !important;
+    padding-bottom: 80px; /* مسافة عشان البار ميتغطاش */
+}
+
+.chat-input-container {
+    position: absolute; /* بيثبته في مكانه */
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    z-index: 2000;
+    background: var(--bg-main); /* نفس لون خلفيتك */
+}
