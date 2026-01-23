@@ -22,49 +22,41 @@
     </div>
 
     <div id="dashboard" class="app-container" style="display: none;">
-        
         <aside class="sidebar-right">
-            <div class="profile-card-new">
-                <div class="profile-header-bg">
-                    <img src="https://i.pravatar.cc/70" class="u-avatar-main" id="userAvatar">
+            <div class="profile-card-dark">
+                <div class="profile-header-gradient">
+                    <img src="https://i.pravatar.cc/80?u=sofa" class="u-avatar-main">
                 </div>
-                
-                <div class="profile-body">
+                <div class="profile-content">
                     <div id="userNameDisplay"></div>
                     <span id="adminBadge" class="badge-black" style="display:none;">المشرف العام</span>
-                    
-                    <div class="stats-grid">
+                    <div class="stats-box">
                         <p>الرتبة: <span id="rankDisplay"></span></p>
                         <p>الكوينز: <span id="coinDisplay"></span> 💰</p>
                         <p>الرسايل: <span id="msgCurrent"></span></p>
                     </div>
-
-                    <div class="mini-box">
+                    <div class="mini-section">
                         <small>الهدايا</small>
-                        <div>لا توجد هدايا</div>
+                        <p>لا توجد هدايا حتى الآن</p>
                     </div>
-
-                    <div class="mini-box">
+                    <div class="mini-section">
                         <small>الأوسمة</small>
-                        <div class="badges-list">🇪🇬 🎖️</div>
+                        <div class="badges">🇪🇬 🎖️</div>
                     </div>
-
-                    <div class="upgrade-section">
-                        <p>🎯 الترقية للمستوى <span id="lvlValNext">1</span></p>
+                    <div class="upgrade-box">
+                        <p>🎯 الترقية إلى المستوى <span id="lvlValNext">1</span></p>
                         <div class="progress-track"><div id="lvlBar" class="progress-fill"></div></div>
                         <small>المستوى الحالي: <span id="lvlVal">0</span></small>
                     </div>
-                    
-                    <button class="btn-blue-soft" onclick="openSettings()">الإعدادات العامة</button>
+                    <button class="btn-settings-blue" onclick="openSettings()">الإعدادات العامة</button>
                 </div>
             </div>
-            
             <nav class="nav-menu">
                 <div class="nav-item" onclick="switchView('chat')">الدردشة العامة</div>
                 <div class="nav-item" onclick="switchView('groups')">المجموعات</div>
                 <div class="nav-item nav-admin" id="adminTab" style="display:none;" onclick="switchView('admin')">لوحة المشرف</div>
             </nav>
-            <div class="timer-box" style="text-align:center;">الهدية: <span id="countdown">00:00</span></div>
+            <div class="timer-box">الهدية: <span id="countdown">00:00</span></div>
         </aside>
 
         <main class="main-content">
@@ -76,30 +68,8 @@
                     <button onclick="sendMessage()" class="btn-main">إرسال</button>
                 </div>
             </div>
-
-            <div id="viewGroups" class="view-panel" style="display:none;">
-                <div style="display:flex; justify-content:space-between; align-items:center;">
-                    <h3>المجموعات</h3>
-                    <button class="btn-create" onclick="openCreateGroupModal()">+ إنشاء جروب</button>
-                </div>
-                <div id="groupsGrid" class="groups-grid"></div>
-            </div>
-
-            <div id="viewAdmin" class="view-panel" style="display:none;">
-                <h3>صلاحيات المشرف Sofa</h3>
-                <div class="admin-actions" style="display:flex; flex-direction:column; gap:10px;">
-                    <button class="btn-danger" onclick="adminAction('تعطيل الجروبات')">تعطيل كافة الجروبات</button>
-                    <button class="btn-danger" onclick="adminAction('حظر الـ IP')">حظر شامل للمخالفين</button>
-                </div>
-            </div>
         </main>
-
-        <aside class="sidebar-left">
-            <h4>المتواجدون (<span id="totalOnline">0</span>)</h4>
-            <div id="onlineList" style="display:flex; flex-direction:column; gap:15px; align-items:center;"></div>
-        </aside>
     </div>
-
     <script src="script.js"></script>
 </body>
 </html>
