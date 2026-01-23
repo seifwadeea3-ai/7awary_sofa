@@ -1,26 +1,37 @@
-:root { --bg: #0b0f11; --panel: #161d21; --accent: #1abc9c; }
-body { margin: 0; background: var(--bg); color: #eee; font-family: sans-serif; direction: rtl; }
+:root { --main-bg: #0b0f11; --panel-bg: #161d21; --accent: #1abc9c; --admin-color: #000; }
+body { margin: 0; font-family: 'Segoe UI', Tahoma, sans-serif; background: var(--main-bg); color: #eee; direction: rtl; }
 
-/* صف الأوسمة داخل الحساب */
-.badges-row { display: flex; justify-content: center; gap: 5px; margin: 10px 0; min-height: 30px; }
-.badge-item { font-size: 20px; background: rgba(255,255,255,0.1); padding: 2px 5px; border-radius: 5px; }
+/* تسجيل الدخول */
+.overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.9); display: flex; align-items: center; justify-content: center; z-index: 1000; }
+.login-modal { background: #fff; padding: 40px; border-radius: 15px; text-align: center; color: #333; width: 300px; }
+.login-modal input { width: 90%; padding: 10px; margin: 10px 0; border: 1px solid #ddd; border-radius: 5px; }
 
-/* المتجر والجروبات */
-.shop-grid, .groups-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 15px; padding: 15px; }
-.shop-item, .group-card { background: var(--panel); padding: 15px; border-radius: 10px; text-align: center; border: 1px solid #2d3b43; }
-.shop-item span { font-size: 30px; display: block; }
-.shop-item button { background: var(--accent); border: none; color: #fff; padding: 5px; width: 100%; border-radius: 4px; cursor: pointer; margin-top: 10px; }
+/* توزيع الواجهة */
+.app-container { display: flex; height: 100vh; overflow: hidden; }
+.sidebar-right, .sidebar-left { width: 250px; background: var(--panel-bg); padding: 20px; display: flex; flex-direction: column; gap: 20px; border: 1px solid #242f35; }
+.main-content { flex: 1; padding: 20px; overflow-y: auto; background: #0f1619; }
 
-/* الإدارة والشات */
-.admin-name-style { color: #000 !important; font-weight: bold; text-shadow: 0 0 8px #fff; }
-.msg-bubble { padding: 8px 12px; background: #243139; border-radius: 8px; margin-bottom: 5px; width: fit-content; }
-.msg-admin { background: #000; color: #fff; border-right: 4px solid red; }
+/* ستايل المشرف */
+.admin-name-style { color: var(--admin-color) !important; font-weight: 900; text-shadow: 0 0 10px #fff; font-size: 20px; }
+.badge-black { background: #000; color: #fff; padding: 3px 10px; border-radius: 4px; font-size: 11px; margin-top: 5px; }
+.nav-admin { background: #000 !important; color: #fff !important; border: 1px solid #444; }
 
-/* تقسيمات الصفحة */
-.app-container { display: flex; height: 100vh; }
-.sidebar-right, .sidebar-left { width: 240px; background: var(--panel); padding: 20px; }
-.main-content { flex: 1; padding: 20px; overflow-y: auto; }
-.overlay { position: fixed; inset: 0; background: #000; display: flex; align-items: center; justify-content: center; z-index: 100; }
-.login-modal { background: #fff; padding: 30px; border-radius: 10px; color: #333; }
-.progress-track { background: #000; height: 8px; border-radius: 4px; margin-top: 5px; }
+/* الشات */
+.chat-area { background: #1c262b; border-radius: 10px; height: 500px; display: flex; flex-direction: column; margin-top: 15px; }
+.chat-msgs { flex: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 10px; }
+.msg-bubble { padding: 8px 15px; background: #2d3b43; border-radius: 10px; max-width: 70%; font-size: 14px; }
+.msg-admin { background: #000; color: #fff; border-right: 4px solid #e74c3c; }
+
+/* الجروبات */
+.groups-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 15px; padding-top: 20px; }
+.group-card { background: #1c262b; padding: 15px; border-radius: 10px; text-align: center; border: 1px solid #2d3b43; }
+.group-off { opacity: 0.4; filter: grayscale(1); pointer-events: none; }
+
+/* أزرار وعناصر عامة */
+.btn-main, .btn-create { background: var(--accent); color: #fff; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; }
+.nav-item { padding: 12px; background: #242f35; border-radius: 8px; cursor: pointer; text-align: center; transition: 0.2s; }
+.nav-item:hover { background: var(--accent); }
+.progress-track { background: #111; height: 8px; border-radius: 4px; margin: 10px 0; }
 .progress-fill { background: var(--accent); height: 100%; width: 0%; transition: 0.5s; }
+.user-row { display: flex; gap: 10px; overflow-x: auto; padding: 10px 0; }
+.u-avatar { width: 40px; height: 40px; border-radius: 50%; border: 2px solid var(--accent); }
