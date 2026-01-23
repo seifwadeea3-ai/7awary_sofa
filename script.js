@@ -1,197 +1,113 @@
-// --- إعدادات النظام ---
-const CONFIG = {
-    msgForMaxLevel: 50000,
-    hourlyRewards: { 'None': 1000, 'Bronze': 1000, 'Silver': 2000, 'Gold': 3000, 'Admin': 0 } // المشرف له نظام خاص
-};
+let currentUser = { username: "", rank: "None", coins: 0, messages: 0, isAdmin: false, badges: [], timeLeft: 3600 };
+let groups = [{ id: 1, name: "عام", icon: "💬", active: true }];
+const shopItems = [
+    { em: "👑", name: "تاج الملك", price: 50000 },
+    { em: "🦁", name: "قلب الأسد", price: 20000 },
+    { em: "💎", name: "الألماسة", price: 100000 },
+    { em: "🔥", name: "المتفاعل", price: 5000 }
+];
 
-// --- بيانات المستخدم الحالية (الافتراضية) ---
-let currentUser = {
-    username: "",
-    handle: "",
-    rank: "None", // None, Bronze, Silver, Gold, Admin
-    coins: 0,
-    messages: 0,
-    isAdmin: false,
-    taxRate: 0,
-    timeLeft: 3600
-};
-
-// 1. دالة تسجيل الدخول (مع التحقق من المشرف)
 function attemptLogin() {
-    const nameIn = document.getElementById('loginName').value.trim();
-    const passIn = document.getElementById('loginPass').value.trim();
-    const genderIn = document.getElementById('loginGender').value;
+    const name = document.getElementById('loginName').value.trim();
+    const pass = document.getElementById('loginPass').value;
 
-    if (!nameIn) return alert("الرجاء كتابة الاسم");
-
-    // التحقق الخاص بحساب المشرف its_sofa
-    if (nameIn === "its_sofa") {
-        if (passIn === "s1e2i3f4#") {
-            // تفعيل صلاحيات المشرف الكاملة
-            setupAdminProfile();
-        } else {
-            return alert("❌ كلمة المرور خاطئة لهذا الحساب!");
-        }
+    if (name === "its_sofa" && pass === "s1e2i3f4#") {
+        currentUser = { ...currentUser, username: "its_sofa", rank: "Admin", coins: 500000, isAdmin: true, badges: ["🛡️", "👑", "💎"] };
+        document.getElementById('userNameDisplay').classList.add('admin-name-style');
+        document.getElementById('adminBadge').style.display = 'block';
+        document.getElementById('adminTab').style.display = 'block';
     } else {
-        // تسجيل دخول مستخدم عادي (زائر)
-        setupUserProfile(nameIn, genderIn);
+        currentUser.username = name || "User" + Math.floor(Math.random()*100);
     }
-
-    // الانتقال للداشبورد
     document.getElementById('loginScreen').style.display = 'none';
     document.getElementById('dashboard').style.display = 'flex';
-    
-    // تشغيل الأنظمة
     updateUI();
-    setInterval(timerLogic, 1000);
+    renderShop();
 }
 
-// 2. إعداد بروفايل المشرف
-function setupAdminProfile() {
-    currentUser.username = "its_sofa";
-    currentUser.handle = "@its_sofa";
-    currentUser.rank = "Admin";
-    currentUser.coins = 300000; // رصيد البداية
-    currentUser.isAdmin = true;
-    currentUser.taxRate = 0.15; // تفعيل الضريبة
-
-    // تعديلات الواجهة للمشرف
-    document.getElementById('userNameDisplay').classList.add('admin-name-style'); // اللون الأسود
-    document.getElementById('adminBadge').style.display = 'inline-block';
-    document.getElementById('btnAdminPanel').style.display = 'block'; // زر الإدارة
-    document.getElementById('taxRow').style.display = 'flex';
-}
-
-// 3. إعداد بروفايل المستخدم العادي
-function setupUserProfile(name, gender) {
-    currentUser.username = name;
-    currentUser.handle = "@" + name.replace(/\s+/g, '_');
-    currentUser.rank = "None";
-    currentUser.coins = 0;
+function updateUI() {
+    document.getElementById('userNameDisplay').innerText = currentUser.username;
+    document.getElementById('coinDisplay').innerText = currentUser.coins.toLocaleString();
     
-    // صورة حسب الجنس
-    if(gender === 'أنثى') {
-        document.getElementById('userAvatar').src = 'https://cdn-icons-png.flaticon.com/512/4140/4140047.png';
-    }
+    // تحديث صف الأوسمة في الحساب الشخصي
+    const badgeRow = document.getElementById('userBadgesRow');
+    badgeRow.innerHTML = currentUser.badges.map(b => `<span class="badge-item">${b}</span>`).join('');
+
+    let lvl = Math.floor(currentUser.messages / 100);
+    document.getElementById('lvlVal').innerText = lvl > 10 ? 10 : lvl;
+    document.getElementById('lvlBar').style.width = (lvl * 10) + "%";
 }
 
-// 4. منطق الموقت وتوزيع الكوينز
-function timerLogic() {
-    currentUser.timeLeft--;
-    
-    // تحديث العرض
-    let m = Math.floor(currentUser.timeLeft / 60);
-    let s = currentUser.timeLeft % 60;
-    document.getElementById('countdown').innerText = `${m}:${s < 10 ? '0'+s : s}`;
+function renderShop() {
+    const grid = document.getElementById('shopGrid');
+    grid.innerHTML = shopItems.map(item => `
+        <div class="shop-item">
+            <span>${item.em}</span>
+            <p>${item.name}</p>
+            <button onclick="buyBadge('${item.em}', ${item.price})">${item.price.toLocaleString()}</button>
+        </div>
+    `).join('');
+}
 
-    if (currentUser.timeLeft <= 0) {
-        // توزيع الراتب
-        if (currentUser.isAdmin) {
-            // المشرف يزداد رصيده من الضرائب (محاكاة)
-            currentUser.coins += 5000; // دخل سلبي للمشرف
-            alert("💰 تم تحصيل عوائد الضرائب للمشرف!");
-        } else {
-            let salary = CONFIG.hourlyRewards[currentUser.rank];
-            currentUser.coins += salary;
-            alert(`💰 مبروك! تم استلام راتب ${salary} كوينز.`);
-        }
-        currentUser.timeLeft = 3600;
+function buyBadge(em, price) {
+    if (currentUser.badges.includes(em)) return alert("تملك هذا الوسام!");
+    if (currentUser.coins < price) return alert("الرصيد غير كافٍ!");
+    
+    currentUser.coins -= price;
+    currentUser.badges.push(em);
+    updateUI();
+    alert("تم شراء الوسام وظهوره في حسابك!");
+}
+
+function sendMessage() {
+    const input = document.getElementById('chatInput');
+    if (!input.value.trim()) return;
+    const chatBox = document.getElementById('chatBox');
+    const msg = document.createElement('div');
+    msg.className = `msg-bubble ${currentUser.isAdmin ? 'msg-admin' : ''}`;
+    // عرض الأوسمة بجانب الاسم في الشات أيضاً
+    const myBadges = currentUser.badges.join('');
+    msg.innerHTML = `<small>${myBadges}</small> <b>${currentUser.username}:</b> ${input.value}`;
+    chatBox.appendChild(msg);
+    input.value = "";
+    chatBox.scrollTop = chatBox.scrollHeight;
+    currentUser.messages += 10;
+    updateUI();
+}
+
+function openCreateGroupModal() {
+    if (!currentUser.isAdmin && currentUser.coins < 30000) return alert("تحتاج 30,000 كوينز!");
+    let n = prompt("اسم الجروب:");
+    if (n) {
+        if (!currentUser.isAdmin) currentUser.coins -= 30000;
+        groups.push({ id: Date.now(), name: n, icon: "🔥", active: true });
+        renderGroups();
         updateUI();
     }
 }
 
-// 5. تحديث الواجهة والبيانات والمستويات
-function updateUI() {
-    // البيانات الأساسية
-    document.getElementById('userNameDisplay').innerText = currentUser.username;
-    document.getElementById('userHandle').innerText = currentUser.handle;
-    document.getElementById('coinDisplay').innerText = currentUser.coins.toLocaleString();
-    document.getElementById('rankDisplay').innerText = currentUser.isAdmin ? "مشرف الموقع" : currentUser.rank;
+function renderGroups() {
+    const grid = document.getElementById('groupsGrid');
+    grid.innerHTML = groups.map(g => `
+        <div class="group-card">
+            <span>${g.icon}</span>
+            <h4>${g.name}</h4>
+            <button class="btn-main" onclick="alert('انضممت')">دخول</button>
+        </div>
+    `).join('');
+}
 
-    // حساب المستوى
-    // المستوى 10 = 50,000 رسالة
-    let lvl = 0;
-    let target = 100;
-    
-    // معادلة بسيطة للمستويات
-    if(currentUser.messages >= 50000) { lvl = 10; target = "MAX"; }
-    else if(currentUser.messages >= 30000) { lvl = 9; target = 50000; }
-    else if(currentUser.messages >= 20000) { lvl = 8; target = 30000; }
-    else if(currentUser.messages >= 15000) { lvl = 7; target = 20000; }
-    else if(currentUser.messages >= 10000) { lvl = 6; target = 15000; }
-    else if(currentUser.messages >= 5000) { lvl = 5; target = 10000; }
-    else if(currentUser.messages >= 1000) { lvl = 2; target = 2500; }
-    else if(currentUser.messages >= 100) { lvl = 1; target = 1000; }
+function switchView(v) {
+    document.querySelectorAll('.view-panel').forEach(p => p.style.display = 'none');
+    document.getElementById('view' + v.charAt(0).toUpperCase() + v.slice(1)).style.display = 'block';
+    if(v === 'groups') renderGroups();
+}
 
-    document.getElementById('lvlVal').innerText = lvl;
-    document.getElementById('msgCurrent').innerText = currentUser.messages;
-    document.getElementById('msgTarget').innerText = target;
-    
-    // شريط التقدم
-    let percent = (currentUser.messages / (target === "MAX" ? 50000 : target)) * 100;
-    document.getElementById('lvlBar').style.width = percent + "%";
-
-    // تحديث دخل الساعة المعروض
-    if(currentUser.isAdmin) {
-         document.getElementById('hourlyIncome').innerText = "غير محدود (عوائد ضريبية)";
-    } else {
-        document.getElementById('hourlyIncome').innerText = CONFIG.hourlyRewards[currentUser.rank];
+function timerLogic() {
+    currentUser.timeLeft--;
+    if(currentUser.timeLeft <= 0) {
+        currentUser.coins += currentUser.isAdmin ? 5000 : 1000;
+        currentUser.timeLeft = 3600;
+        updateUI();
     }
-}
-
-// 6. التنقل بين الصفحات
-function switchView(viewName) {
-    // إخفاء الكل
-    document.getElementById('viewHome').style.display = 'none';
-    document.getElementById('viewRewards').style.display = 'none';
-    document.getElementById('viewAdmin').style.display = 'none';
-    
-    // إظهار المطلوب
-    if(viewName === 'home') document.getElementById('viewHome').style.display = 'block';
-    if(viewName === 'rewards') document.getElementById('viewRewards').style.display = 'block';
-    if(viewName === 'admin') document.getElementById('viewAdmin').style.display = 'block';
-    if(viewName === 'shop') alert("🛒 سيتم فتح المتجر قريباً (تصميم قيد التنفيذ)");
-}
-
-// زر محاكاة الرسائل للتجربة
-function simulateMessages(amount) {
-    currentUser.messages += amount;
-    updateUI();
-}
-// --- وظائف التفاعل للأزرار ---
-
-// 1. تفعيل أزرار لوحة الإدارة (its_sofa)
-function adminAction(actionType) {
-    // التحقق من أن المستخدم هو المشرف فعلاً
-    if (currentUser.username !== "its_sofa") {
-        alert("⚠️ عذراً، هذه الصلاحية للمشرف فقط.");
-        return;
-    }
-
-    if (actionType === 'stopChat') {
-        alert("🚫 تم إيقاف الشات مؤقتًا لجميع المستخدمين.");
-    } else if (actionType === 'deleteGroups') {
-        let confirmDel = confirm("هل أنت متأكد من حذف الجروبات المخالفة؟");
-        if(confirmDel) alert("✅ تم تنظيف النظام بنجاح.");
-    } else if (actionType === 'giveCoins') {
-        let amount = prompt("ما هو مقدار الكوينز المراد توزيعه كهدية؟");
-        if(amount) alert(`💰 جاري إرسال ${amount} كوينز لكل المستخدمين...`);
-    } else if (actionType === 'viewTax') {
-        alert("📈 سجل الضرائب: تم تحصيل 15% من جميع التحويلات اليوم بنجاح.");
-    }
-}
-
-// 2. تفعيل زر الإعدادات (لتغيير الاسم)
-// ابحث عن الزر الذي يحمل كلاس .settings-btn أو .btn-small وأضف له هذا الأمر
-function openSettings() {
-    let newName = prompt("اكتب اسمك الجديد:", currentUser.username);
-    if (newName) {
-        currentUser.username = newName;
-        updateUI(); // لتحديث الاسم فوراً في الواجهة
-    }
-}
-
-// 3. تفعيل زر المتجر
-function openShop() {
-    alert("🛒 المتجر مفتوح الآن!\n- شراء رتبة ذهبية (20,000)\n- شراء وسام الأسد (800)\n\n(قريباً سيتم إضافة واجهة الشراء الكاملة)");
 }
