@@ -129,6 +129,25 @@ function listenForMessages() {
 function renderMessage(data) {
     const chatBox = document.getElementById('chatBox');
     const isMe = data.username === userState.username; 
+    const msgDiv = document.createElement('div');
+    
+    msgDiv.style = `display:flex; flex-direction:column; align-items:${isMe ? 'flex-end' : 'flex-start'}; width:100%; margin-bottom:10px;`;
+
+    const nameColor = CONFIG.ranks[data.rank].color;
+    const time = new Date(data.timestamp).toLocaleTimeString('ar-EG', {hour:'2-digit', minute:'2-digit'});
+
+    msgDiv.innerHTML = `
+        <div class="msg-bubble ${data.rank === 'Admin' ? 'admin' : ''}" style="${isMe ? 'background: var(--accent); color: white;' : ''}">
+            <div class="msg-header" style="pointer-events: auto;">
+                <span onclick="openUserProfile('${data.username}')" style="color: ${isMe ? 'white' : nameColor}; font-weight:bold; cursor:pointer; position:relative; z-index:999;">${data.username}</span>
+                <span class="msg-time" style="${isMe ? 'color: #eee' : ''}">${time}</span>
+            </div>
+            <div class="msg-body">${data.text}</div>
+        </div>
+    `;
+    chatBox.appendChild(msgDiv);
+    chatBox.scrollTop = chatBox.scrollHeight;
+}
     
     const msgDiv = document.createElement('div');
     // إضافة كلاسات الجهة والألوان
@@ -185,3 +204,4 @@ function renderGroups() {
 
 function openModal(id) { document.getElementById(id).style.display = 'flex'; }
 function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+
