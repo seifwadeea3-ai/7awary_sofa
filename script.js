@@ -1,33 +1,80 @@
-:root {
-    --pink: #e91e63;
-    --dark-bg: #0f1619;
-    --sidebar: #1a262c;
-    --accent: #1abc9c;
-    --border: #2d3748;
+// المتغيرات الأساسية
+let userData = {
+    name: "زائر",
+    coins: 0,
+    messages: 0,
+    rank: "None", // None, Bronze, Silver, Gold
+    timeLeft: 3600
+};
+
+// 1. نظام المستويات الذي حددته
+const LEVELS = [
+    { lvl: 10, min: 50000 }, { lvl: 9, min: 30000 }, { lvl: 8, min: 20000 },
+    { lvl: 7, min: 15000 }, { lvl: 5, min: 10000 }, { lvl: 4, min: 5000 },
+    { lvl: 3, min: 2500 }, { lvl: 2, min: 1000 }, { lvl: 1, min: 100 }
+];
+
+const REWARDS = { 'None': 1000, 'Bronze': 1000, 'Silver': 2000, 'Gold': 3000 };
+
+// دالة الدخول وتعيين الاسم المختار
+function loginUser() {
+    const name = document.getElementById('inputName').value;
+    const gender = document.getElementById('inputGender').value;
+    
+    if(!name) return alert("من فضلك ادخل اسمك!");
+
+    userData.name = name;
+    document.getElementById('displayUserName').innerText = name;
+    document.getElementById('displayHandle').innerText = "@" + name.replace(/\s/g, '');
+    document.getElementById('displayGender').innerText = gender;
+
+    document.getElementById('loginPage').style.display = 'none';
+    document.getElementById('userDashboard').style.display = 'flex';
+    
+    startApp();
 }
 
-body { margin: 0; font-family: 'Segoe UI', sans-serif; background: var(--dark-bg); color: #cbd5e0; overflow: hidden; }
+function startApp() {
+    setInterval(updateTimer, 1000);
+    updateUI();
+}
 
-/* تصميم صفحة الدخول */
-.login-screen { display: flex; height: 100vh; }
-.login-left-art { flex: 2; background: url('https://w0.peakpx.com/wallpaper/317/998/HD-wallpaper-digital-art.jpg') no-repeat center; background-size: cover; }
-.login-right-form { flex: 1; background: #f4f7f6; display: flex; align-items: center; padding: 40px; color: #333; }
-.enter-btn { width: 100%; padding: 15px; background: var(--pink); color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 18px; }
+function updateTimer() {
+    userData.timeLeft--;
+    if(userData.timeLeft <= 0) {
+        userData.coins += REWARDS[userData.rank];
+        userData.timeLeft = 3600;
+        alert("💰 تم استلام مكافأة الساعة!");
+    }
+    updateUI();
+}
 
-/* تصميم لوحة التحكم */
-.dashboard-wrapper { display: flex; height: 100vh; }
-.sidebar-user, .sidebar-actions { width: 300px; background: var(--sidebar); border-left: 1px solid var(--border); padding: 20px; }
-.main-content { flex: 1; display: flex; align-items: center; justify-content: center; text-align: center; }
+function updateUI() {
+    // تحديث الكوينز والرتبة
+    document.getElementById('coinVal').innerText = userData.coins;
+    document.getElementById('rankVal').innerText = userData.rank;
+    document.getElementById('rateDisplay').innerText = REWARDS[userData.rank];
 
-.profile-card { text-align: center; border-bottom: 1px solid var(--border); padding-bottom: 20px; }
-.avatar-box img { width: 90px; height: 90px; border-radius: 50%; border: 3px solid var(--accent); }
+    // تحديث الموقت
+    let m = Math.floor(userData.timeLeft / 60);
+    let s = userData.timeLeft % 60;
+    document.getElementById('timerClock').innerText = `${m}:${s < 10 ? '0'+s : s}`;
 
-.progress-container { background: #111; height: 10px; border-radius: 5px; margin: 10px 0; overflow: hidden; }
-.progress-bar { background: var(--accent); height: 100%; width: 0%; transition: 0.5s; }
+    // حساب المستوى بناءً على الرسائل
+    let currentLvl = 0;
+    let nextTarget = 100;
+    for (let l of LEVELS) {
+        if (userData.messages >= l.min) {
+            currentLvl = l.lvl;
+            break;
+        }
+    }
+    document.getElementById('lvlNum').innerText = currentLvl;
+    document.getElementById('msgCount').innerText = userData.messages;
+    document.getElementById('lvlBar').style.width = (userData.messages / 50000 * 100) + "%";
+}
 
-.timer-display { background: rgba(0,0,0,0.2); padding: 20px; border-radius: 10px; border: 1px dashed var(--accent); margin: 20px 0; }
-#timerClock { font-size: 40px; color: #e74c3c; font-weight: bold; }
-
-.action-grid { display: grid; gap: 15px; }
-.action-item { background: #243139; padding: 25px; border-radius: 10px; text-align: center; cursor: pointer; border: 1px solid var(--border); }
-.action-item:hover { border-color: var(--accent); color: var(--accent); }
+function showView(view) {
+    document.getElementById('homeView').style.display = (view === 'home' ? 'block' : 'none');
+    document.getElementById('rewardsView').style.display = (view === 'rewards' ? 'block' : 'none');
+}
