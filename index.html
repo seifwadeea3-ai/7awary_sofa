@@ -4,115 +4,143 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>7awary_sofa | النظام المتكامل</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body class="dark-theme">
 
-    <div id="loginScreen" class="overlay">
+    <div id="loginOverlay" class="overlay">
         <div class="login-card">
-            <div class="logo-text">7awary_sofa</div>
-            <div id="authTabs">
-                <button onclick="showAuth('login')">تسجيل دخول</button>
-                <button onclick="showAuth('register')">إنشاء حساب</button>
-                <button onclick="loginAsGuest()" class="btn-guest">دخول زائر</button>
-            </div>
+            <h1 class="logo-text">7awary_sofa</h1>
+            <p class="sub-text">مجتمع النخبة الرقمي</p>
             
-            <div id="loginForm" class="sofa-form">
-                <input type="text" id="loginName" placeholder="اسم المستخدم" class="input-field">
-                <input type="password" id="loginPass" placeholder="كلمة المرور" class="input-field">
-                <button onclick="attemptLogin()" class="btn-login">دخول</button>
+            <div class="auth-box">
+                <input type="text" id="loginName" placeholder="اسم المستخدم" class="input-modern">
+                <input type="password" id="loginPass" placeholder="كلمة المرور" class="input-modern">
+                <button onclick="attemptLogin()" class="btn-primary">تسجيل الدخول</button>
+                <div class="auth-footer">
+                    <button onclick="loginAsGuest()" class="btn-text">دخول كزائر</button>
+                    <button onclick="alert('قريباً')" class="btn-text">إنشاء حساب</button>
+                </div>
             </div>
         </div>
     </div>
 
-    <div id="dashboard" class="app-container" style="display: none;">
+    <div id="dashboard" class="app-layout" style="display: none;">
         
         <aside class="sidebar-right">
-            <div class="profile-section">
-                <div class="avatar-container">
-                    <img id="userAvatar" src="default-avatar.png" alt="Avatar">
+            <div class="profile-card">
+                <div class="avatar-wrapper">
+                    <img id="userAvatar" src="https://ui-avatars.com/api/?name=User&background=random" alt="Avatar">
+                    <span id="rankBadge" class="badge-rank">زائر</span>
                 </div>
-                <div id="userNameDisplay" class="user-name"></div>
-                <div id="userRankBadge" class="rank-badge">بدون رتبة</div>
+                <h3 id="userNameDisplay">اسم المستخدم</h3>
+                <div class="stats-row">
+                    <span class="coin-pill"><span id="coinDisplay">0</span> 🪙</span>
+                    <span class="lvl-pill">Lvl <span id="lvlDisplay">1</span></span>
+                </div>
             </div>
 
-            <nav class="main-nav">
-                <div class="nav-item active" onclick="switchView('chat')">💬 الشات</div>
-                <div class="nav-item" onclick="switchView('groups')">👥 الجروبات</div>
-                <div class="nav-item" onclick="openStore()">🏪 المتجر</div>
-                <div class="nav-item" onclick="openRewards()">🎁 المكافآت <span id="rewardDot" class="dot"></span></div>
-                <div class="nav-item" onclick="openNotifications()">🔔 الإشعارات <span id="notifCount" class="badge">0</span></div>
-                <div class="nav-item" onclick="openSettings()">⚙️ الإعدادات</div>
-                <div class="nav-item nav-admin" id="adminTab" style="display:none;" onclick="switchView('admin')">👑 الإدارة</div>
+            <nav class="nav-menu">
+                <button class="nav-btn active" onclick="switchView('chat')">💬 الدردشة</button>
+                <button class="nav-btn" onclick="switchView('groups')">👥 الجروبات</button>
+                <button class="nav-btn" onclick="openModal('storeModal')">🏪 المتجر</button>
+                <button class="nav-btn" onclick="openModal('rewardsModal')">🎁 المكافآت <span id="rewardDot"></span></button>
+                <button class="nav-btn" onclick="openModal('settingsModal')">⚙️ الإعدادات</button>
+                <button class="nav-btn admin-btn" id="adminTab" style="display:none;" onclick="switchView('admin')">👑 لوحة المشرف</button>
             </nav>
-
-            <div class="coin-balance">
-                <span id="coinDisplay">0</span> 🪙
-            </div>
         </aside>
 
         <main class="main-content">
             
-            <div id="viewChat" class="view-panel">
-                <div class="chat-tabs">
-                    <button class="tab-btn active" onclick="filterChat('groups')">شات الجروبات</button>
-                    <button class="tab-btn" onclick="filterChat('private')">شات خاص</button>
+            <div id="viewChat" class="view-section">
+                <div class="chat-header">
+                    <div class="tabs">
+                        <button class="tab active">شات الجروبات</button>
+                        <button class="tab">الخاص</button>
+                    </div>
                 </div>
-                
-                <div id="chatBox" class="chat-msgs">
+
+                <div id="chatBox" class="chat-messages">
                     </div>
 
-                <div class="chat-input-new-container">
-                    <div class="chat-input-wrapper">
-                        <button class="plus-btn" onclick="toggleExtraMenu()">＋</button>
-                        <input type="text" id="chatInput" placeholder="اكتب رسالتك هنا أو @ للمنشن..." onkeypress="handleKeyPress(event)">
-                        <button class="send-btn-orange" onclick="sendMessage()">
-                            <span class="send-icon">🚀</span>
-                        </button>
+                <div class="chat-input-container">
+                    <div class="input-wrapper">
+                        <button class="btn-plus" onclick="toggleQuickMenu()">＋</button>
+                        <input type="text" id="chatInput" placeholder="اكتب رسالة أو @ منشن..." onkeypress="handleEnter(event)">
+                        <button class="btn-send" onclick="sendMessage()">➤</button>
                     </div>
                 </div>
             </div>
 
-            <div id="viewGroups" class="view-panel" style="display:none;">
-                <div class="view-header">
-                    <h3>المجموعات (<span id="groupsCount">0</span>)</h3>
-                    <button class="btn-create" onclick="createGroup()">+ إنشاء جروب (30k)</button>
+            <div id="viewGroups" class="view-section" style="display:none;">
+                <div class="section-header">
+                    <h2>المجموعات النشطة</h2>
+                    <button class="btn-create" onclick="createGroup()">+ إنشاء (30k)</button>
                 </div>
-                <div id="groupsGrid" class="groups-grid"></div>
+                <div id="groupsGrid" class="grid-container"></div>
             </div>
-            
-            <div id="viewAdmin" class="view-panel" style="display:none;">
-                <h3>لوحة تحكم المشرف العام</h3>
-                <div class="admin-tools">
-                    <button class="btn-danger" onclick="adminAction('disable_groups')">تعطيل كافة الجروبات</button>
-                    <button class="btn-danger" onclick="adminAction('clear_cache')">تصفير الذاكرة</button>
+
+            <div id="viewAdmin" class="view-section" style="display:none;">
+                <div class="section-header admin-header">
+                    <h2>👑 تحكم المشرف العام</h2>
+                </div>
+                <div class="admin-panel">
+                    <div class="stat-card">ضريبة مجمعة: <span id="adminTax">0</span> 🪙</div>
+                    <button class="btn-danger" onclick="adminAction('ban_all')">حظر جميع المخالفين</button>
+                    <button class="btn-danger" onclick="adminAction('reset_groups')">تعطيل كافة الجروبات</button>
                 </div>
             </div>
         </main>
 
         <aside class="sidebar-left">
-            <h4>المتواجدون (<span id="totalOnline">0</span>)</h4>
-            <div id="onlineList"></div>
-            <hr class="separator">
-            <h4>أحداث اليوم 📅</h4>
-            <div class="daily-events" id="eventsList">
-                <div class="event-item">🎁 مكافآت مضاعفة</div>
-                <div class="event-item">🏆 مسابقة التفاعل</div>
+            <h3>المتواجدون (<span id="onlineCount">0</span>)</h3>
+            <div id="onlineList" class="online-users"></div>
+            <hr>
+            <h3>سجل الأحداث</h3>
+            <div class="events-log">
+                <p>🌟 بدأت ساعة الحظ</p>
+                <p>🏆 الملك انضم للشات</p>
             </div>
         </aside>
     </div>
 
-    <div id="rewardModal" class="modal">
+    <div id="rewardsModal" class="modal">
         <div class="modal-content">
-            <span class="close-modal" onclick="closeModal('rewardModal')">&times;</span>
-            <h3>🎁 مركز المكافآت</h3>
-            <div id="timerContainer">
-                <p>الوقت المتبقي للاستلام:</p>
-                <div id="countdown" class="timer-style">00:00</div>
+            <span class="close" onclick="closeModal('rewardsModal')">&times;</span>
+            <h2>🎁 المكافأة اليومية</h2>
+            <div class="timer-box">
+                <span id="countdown">00:00</span>
             </div>
+            <p>معدلك الحالي: <span id="rateDisplay">1000</span> / ساعة</p>
             <button id="claimBtn" class="btn-claim" disabled onclick="claimCoins()">استلام الكوينز</button>
-            <p class="info-text">معدلك الحالي: <span id="earnRate">1000</span> كوينز/ساعة</p>
+        </div>
+    </div>
+
+    <div id="storeModal" class="modal">
+        <div class="modal-content large-modal">
+            <span class="close" onclick="closeModal('storeModal')">&times;</span>
+            <h2>🏪 متجر الرتب</h2>
+            <div class="store-grid">
+                <div class="store-item bronze">
+                    <h3>برونزي</h3>
+                    <p>1,000 كوينز/ساعة</p>
+                    <span>3,000 🪙</span>
+                    <button onclick="buyRank('Bronze')">شراء</button>
+                </div>
+                <div class="store-item silver">
+                    <h3>فضي</h3>
+                    <p>2,000 كوينز/ساعة</p>
+                    <span>8,000 🪙</span>
+                    <button onclick="buyRank('Silver')">شراء</button>
+                </div>
+                <div class="store-item gold">
+                    <h3>ذهبي</h3>
+                    <p>3,000 كوينز/ساعة</p>
+                    <span>20,000 🪙</span>
+                    <button onclick="buyRank('Gold')">شراء</button>
+                </div>
+            </div>
         </div>
     </div>
 
