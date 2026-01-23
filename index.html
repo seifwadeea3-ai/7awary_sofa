@@ -45,7 +45,7 @@
                 <button class="nav-btn active" onclick="switchView('chat')">💬 الدردشة</button>
                 <button class="nav-btn" onclick="switchView('groups')">👥 الجروبات</button>
                 <button class="nav-btn" onclick="openModal('storeModal')">🏪 المتجر</button>
-                <button class="nav-btn" onclick="openModal('rewardsModal')">🎁 المكافآت <span id="rewardDot"></span></button>
+                <button class="nav-btn" onclick="openModal('rewardsModal')">🎁 المكافآت <span id="rewardDot" style="display:none; color:red;">●</span></button>
                 <button class="nav-btn" onclick="openModal('settingsModal')">⚙️ الإعدادات</button>
                 <button class="nav-btn admin-btn" id="adminTab" style="display:none;" onclick="switchView('admin')">👑 لوحة المشرف</button>
             </nav>
@@ -61,8 +61,7 @@
                     </div>
                 </div>
 
-                <div id="chatBox" class="chat-messages">
-                    </div>
+                <div id="chatBox" class="chat-messages"></div>
 
                 <div class="chat-input-container">
                     <div class="input-wrapper">
@@ -110,7 +109,7 @@
             <span class="close" onclick="closeModal('rewardsModal')">&times;</span>
             <h2>🎁 المكافأة اليومية</h2>
             <div class="timer-box">
-                <span id="countdown">00:00</span>
+                <span id="countdown">60:00</span>
             </div>
             <p>معدلك الحالي: <span id="rateDisplay">1000</span> / ساعة</p>
             <button id="claimBtn" class="btn-claim" disabled onclick="claimCoins()">استلام الكوينز</button>
@@ -144,9 +143,159 @@
         </div>
     </div>
 
-    <script src="script.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-database-compat.js"></script>
+
+    <script>
+        // 1. إعدادات السيرفر (Firebase Config)
+        const firebaseConfig = {
+            apiKey: "AIzaSyDuVHERKp0m35Ti2T6Pa4tE_PbngqDli_Y",
+            authDomain: "haw3ry-sofa.firebaseapp.com",
+            projectId: "haw3ry-sofa",
+            storageBucket: "haw3ry-sofa.firebasestorage.app",
+            messagingSenderId: "812684519022",
+            appId: "1:812684519022:web:b49be4ea7200763515a87f",
+            databaseURL: "https://haw3ry-sofa-default-rtdb.firebaseio.com"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
+        // 2. إعدادات الرتب والنظام
+        const RANK_SETTINGS = {
+            "None":   { label: "بدون رتبة", color: "#d3d3d3", rate: 1000, price: 0 },
+            "Bronze": { label: "برونزي", color: "#cd7f32", rate: 1000, price: 3000 },
+            "Silver": { label: "فضي", color: "#3498db", rate: 2000, price: 8000 },
+            "Gold":   { label: "ذهبي", color: "#f1c40f", rate: 3000, price: 20000 },
+            "Admin":  { label: "المشرف العام", color: "#ffffff", rate: 5000, price: 0 }
+        };
+
+        let userState = {
+            username: "",
+            rank: "None",
+            coins: 0,
+            timer: 3600,
+            claimReady: false,
+            isAdmin: false
+        };
+
+        // 3. دوال الدخول
+        function attemptLogin() {
+            const name = document.getElementById('loginName').value.trim();
+            const pass = document.getElementById('loginPass').value;
+
+            if (name === "its_sofa" && pass === "s1e2i3f4#") {
+                userState.isAdmin = true;
+                userState.rank = "Admin";
+                userState.coins = 500000;
+                document.getElementById('adminTab').style.display = 'block';
+            }
+            userState.username = name || "مستخدم";
+            startApp();
+        }
+
+        function loginAsGuest() {
+            userState.username = "زائر_" + Math.floor(Math.random() * 999);
+            startApp();
+        }
+
+        function startApp() {
+            document.getElementById('loginOverlay').style.display = 'none';
+            document.getElementById('dashboard').style.display = 'grid';
+            updateUI();
+            listenToChat();
+            setInterval(timerTick, 1000);
+        }
+
+        // 4. نظام الشات المتصل بالسيرفر
+        function handleEnter(e) { if (e.key === "Enter") sendMessage(); }
+
+        function sendMessage() {
+            const input = document.getElementById('chatInput');
+            let text = input.value.trim();
+            if (!text) return;
+
+            database.ref('messages').push({
+                username: userState.username,
+                text: text,
+                rank: userState.rank,
+                time: new Date().toLocaleTimeString('ar-EG')
+            });
+            input.value = "";
+        }
+
+        function listenToChat() {
+            database.ref('messages').limitToLast(20).on('child_added', (snapshot) => {
+                const data = snapshot.val();
+                const chatBox = document.getElementById('chatBox');
+                const msg = document.createElement('div');
+                const color = RANK_SETTINGS[data.rank].color;
+                
+                msg.className = 'msg-bubble';
+                msg.innerHTML = `<b style="color:${color}">${data.username}:</b> ${data.text}`;
+                chatBox.appendChild(msg);
+                chatBox.scrollTop = chatBox.scrollHeight;
+            });
+        }
+
+        // 5. نظام الكوينز والمكافآت
+        function timerTick() {
+            if (userState.timer > 0) {
+                userState.timer--;
+                let m = Math.floor(userState.timer / 60);
+                let s = userState.timer % 60;
+                document.getElementById('countdown').innerText = `${m}:${s < 10 ? '0'+s : s}`;
+            } else {
+                userState.claimReady = true;
+                document.getElementById('claimBtn').disabled = false;
+                document.getElementById('rewardDot').style.display = "inline";
+            }
+        }
+
+        function claimCoins() {
+            if (!userState.claimReady) return;
+            const reward = RANK_SETTINGS[userState.rank].rate;
+            userState.coins += reward;
+            userState.timer = 3600;
+            userState.claimReady = false;
+            document.getElementById('claimBtn').disabled = true;
+            document.getElementById('rewardDot').style.display = "none";
+            updateUI();
+            closeModal('rewardsModal');
+            alert(`مبروك! استلمت ${reward} كوينز`);
+        }
+
+        function buyRank(rankName) {
+            const price = RANK_SETTINGS[rankName].price;
+            if (userState.coins >= price) {
+                userState.coins -= price;
+                userState.rank = rankName;
+                updateUI();
+                alert(`ألف مبروك! بقا ليك قيمه ${RANK_SETTINGS[rankName].label}`);
+                closeModal('storeModal');
+            } else {
+                alert("فلوسك مش كفاية يا غالي!");
+            }
+        }
+
+        // 6. دوال الواجهة (UI)
+        function updateUI() {
+            document.getElementById('userNameDisplay').innerText = userState.username;
+            document.getElementById('coinDisplay').innerText = userState.coins.toLocaleString();
+            document.getElementById('rankBadge').innerText = RANK_SETTINGS[userState.rank].label;
+            document.getElementById('rankBadge').style.background = RANK_SETTINGS[userState.rank].color;
+            document.getElementById('rateDisplay').innerText = RANK_SETTINGS[userState.rank].rate;
+        }
+
+        function switchView(view) {
+            document.querySelectorAll('.view-section').forEach(s => s.style.display = 'none');
+            document.getElementById('view' + view.charAt(0).toUpperCase() + view.slice(1)).style.display = 'flex';
+        }
+
+        function openModal(id) { document.getElementById(id).style.display = 'flex'; }
+        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+        function toggleQuickMenu() { alert("قريباً: قائمة الهدايا!"); }
+        function createGroup() { alert("تحتاج 30,000 كوينز لإنشاء جروب!"); }
+    </script>
 </body>
 </html>
-
-
-
