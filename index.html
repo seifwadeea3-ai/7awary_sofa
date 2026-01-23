@@ -10,27 +10,19 @@
 <body>
 
     <div id="loginScreen" class="overlay">
-        <div class="login-split-container">
-            <div class="login-visual">
-                <div class="visual-content">
-                    <h1>7awary_sofa</h1>
-                    <p>أهلاً بك في عالم السوفا</p>
-                </div>
-            </div>
-            <div class="login-form-side">
-                <div class="logo-text">7awary_sofa</div>
-                <h3>تسجيل الدخول</h3>
-                <p>سجل دخولك للانضمام للسوفا</p>
-                <div class="sofa-form">
-                    <input type="text" id="loginName" placeholder="اسم المستخدم" class="input-field">
-                    <input type="password" id="loginPass" placeholder="كلمة المرور" class="input-field">
-                    <button onclick="attemptLogin()" class="btn-login">دخول الآن</button>
-                </div>
+        <div class="login-card">
+            <div class="logo-text">7awary_sofa</div>
+            <p>سجل دخولك للانضمام للسوفا</p>
+            <div class="sofa-form">
+                <input type="text" id="loginName" placeholder="اسم المستخدم" class="input-field">
+                <input type="password" id="loginPass" placeholder="كلمة المرور" class="input-field">
+                <button onclick="attemptLogin()" class="btn-login">دخول الآن</button>
             </div>
         </div>
     </div>
 
     <div id="dashboard" class="app-container" style="display: none;">
+        
         <aside class="sidebar-right">
             <div class="profile-section">
                 <div id="userNameDisplay"></div>
@@ -50,7 +42,7 @@
                 <div class="nav-item nav-admin" id="adminTab" style="display:none;" onclick="switchView('admin')">لوحة المشرف</div>
                 <div class="nav-item" onclick="openSettings()">الإعدادات</div>
             </nav>
-            <div class="timer-box">الهدية: <span id="countdown">00:00</span></div>
+            <div class="timer-box" style="text-align:center; margin-top:10px;">الهدية: <span id="countdown">00:00</span></div>
         </aside>
 
         <main class="main-content">
@@ -73,7 +65,7 @@
 
             <div id="viewAdmin" class="view-panel" style="display:none;">
                 <h3>صلاحيات المشرف Sofa</h3>
-                <div class="admin-actions">
+                <div class="admin-actions" style="display:flex; flex-direction:column; gap:10px;">
                     <button class="btn-danger" onclick="adminAction('تعطيل الجروبات')">تعطيل كافة الجروبات</button>
                     <button class="btn-danger" onclick="adminAction('حظر الـ IP')">حظر شامل للمخالفين</button>
                     <button class="btn-danger" onclick="adminAction('تصفير الكوينز')">تصفير كوينز المشاغبين</button>
@@ -83,7 +75,7 @@
 
         <aside class="sidebar-left">
             <h4>المتواجدون (<span id="totalOnline">0</span>)</h4>
-            <div id="onlineList" class="user-row"></div>
+            <div id="onlineList" style="display:flex; flex-direction:column; gap:15px; align-items:center;"></div>
         </aside>
     </div>
 
