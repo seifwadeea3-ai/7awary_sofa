@@ -3,52 +3,85 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>7awary_sofa - تسجيل الدخول</title>
+    <title>7awary_sofa | لوحة التحكم</title>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <header class="main-header">
-        <div class="logo">7awary_sofa</div>
-        <nav class="nav-links">
-            <a href="#">الرئيسية</a>
-            <a href="#">قوانين السوفا</a>
-            <a href="#">الدعم الفني</a>
-        </nav>
-    </header>
-
-    <main class="login-wrapper">
+    <div id="loginScreen" class="overlay">
         <div class="login-card">
             <div class="card-header">
-                <img src="https://cdn-icons-png.flaticon.com/512/3824/3824444.png" alt="logo" width="60">
-                <h2>دخول 7awary_sofa</h2>
-                <p>مرحباً بك في مجتمعنا</p>
+                <div class="logo-text">7awary_sofa</div>
+                <p>سجل دخولك للانضمام للسوفا</p>
+            </div>
+            <div class="sofa-form">
+                <input type="text" id="loginName" placeholder="اسم المستخدم" class="input-field">
+                <input type="password" id="loginPass" placeholder="كلمة المرور" class="input-field">
+                <button onclick="attemptLogin()" class="btn-login">دخول الآن</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="dashboard" class="app-container" style="display: none;">
+        
+        <aside class="sidebar-right">
+            <div class="profile-section">
+                <div id="userNameDisplay" class=""></div>
+                <span id="adminBadge" class="badge-black" style="display:none;">المشرف العام</span>
+                <div class="stats">
+                    <p>الرتبة: <span id="rankDisplay"></span></p>
+                    <p>الكوينز: <span id="coinDisplay"></span> 💰</p>
+                    <p>الرسايل: <span id="msgCurrent"></span></p>
+                </div>
+                <div class="progress-track"><div id="lvlBar" class="progress-fill"></div></div>
+                <small>المستوى: <span id="lvlVal">0</span></small>
             </div>
             
-            <form id="loginForm" class="sofa-form">
-                <div class="input-box">
-                    <input type="text" id="username" placeholder="اسم المستخدم" required>
-                </div>
-                <div class="input-box">
-                    <input type="password" id="password" placeholder="كلمة المرور" required>
-                </div>
-                
-                <div class="form-actions">
-                    <button type="submit" class="btn-login">دخول الآن</button>
-                    <button type="button" class="btn-visitor">دخول الزوار</button>
-                </div>
+            <nav class="nav-menu">
+                <div class="nav-item" onclick="switchView('chat')">الدردشة العامة</div>
+                <div class="nav-item" onclick="switchView('groups')">المجموعات</div>
+                <div class="nav-item nav-admin" id="adminTab" style="display:none;" onclick="switchView('admin')">لوحة المشرف</div>
+                <div class="nav-item" onclick="openSettings()">الإعدادات</div>
+            </nav>
 
-                <div class="form-footer">
-                    <a href="#">انضم لعائلة 7awary_sofa</a>
-                    <span> | </span>
-                    <a href="#">نسيت كلمة السر؟</a>
+            <div class="timer-box">الهدية القادمة: <span id="countdown">00:00</span></div>
+        </aside>
+
+        <main class="main-content">
+            <div id="viewChat" class="view-panel">
+                <h3>الغرفة العامة</h3>
+                <div id="chatBox" class="chat-msgs"></div>
+                <div class="chat-input-area">
+                    <input type="text" id="chatInput" placeholder="اكتب رسالتك هنا...">
+                    <button onclick="sendMessage()" class="btn-main">إرسال</button>
                 </div>
-            </form>
-        </div>
-    </main>
+            </div>
+
+            <div id="viewGroups" class="view-panel" style="display:none;">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <h3>المجموعات</h3>
+                    <button class="btn-create" onclick="openCreateGroupModal()">+ إنشاء جروب</button>
+                </div>
+                <div id="groupsGrid" class="groups-grid"></div>
+            </div>
+
+            <div id="viewAdmin" class="view-panel" style="display:none;">
+                <h3>صلاحيات المشرف Sofa</h3>
+                <div class="admin-actions">
+                    <button class="btn-danger" onclick="adminAction('تعطيل الجروبات')">تعطيل كافة الجروبات</button>
+                    <button class="btn-danger" onclick="adminAction('حظر الـ IP')">حظر شامل للمخالفين</button>
+                    <button class="btn-danger" onclick="adminAction('تصفير الكوينز')">تصفير كوينز المشاغبين</button>
+                </div>
+            </div>
+        </main>
+
+        <aside class="sidebar-left">
+            <h4>المتواجدون (<span id="totalOnline">0</span>)</h4>
+            <div id="onlineList" class="user-row"></div>
+        </aside>
+    </div>
 
     <script src="script.js"></script>
 </body>
 </html>
-
