@@ -2,82 +2,133 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <title>دردشة كتابية - لوحة التحكم</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نظام الدردشة - حساب المشرف</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <div id="loginPage" class="login-screen">
-        <div class="login-left-art"></div>
-        <div class="login-right-form">
-            <div class="login-form-container">
-                <h2>ضيف ( زائر )</h2>
-                <p>قم بإنشاء حساب مستخدم ضيف</p>
-                <div class="input-group">
-                    <label>الاسم المستعار</label>
-                    <input type="text" id="inputName" placeholder="اكتب اسمك هنا...">
-                </div>
-                <div class="input-group">
-                    <label>جنس *</label>
-                    <select id="inputGender">
-                        <option value="ذكر">ذكر</option>
-                        <option value="أنثى">أنثى</option>
-                    </select>
-                </div>
-                <button class="enter-btn" onclick="loginUser()">تسجيل الدخول</button>
+    <div id="loginScreen" class="login-wrapper">
+        <div class="login-box">
+            <div class="login-header">
+                <h2>تسجيل الدخول</h2>
+                <p>أدخل بياناتك للدخول إلى الدردشة</p>
             </div>
+            <div class="input-group">
+                <input type="text" id="loginName" placeholder="اسم المستخدم">
+            </div>
+            <div class="input-group">
+                <input type="password" id="loginPass" placeholder="كلمة المرور (اختياري للزوار)">
+            </div>
+            <div class="input-group">
+                <select id="loginGender">
+                    <option value="ذكر">ذكر</option>
+                    <option value="أنثى">أنثى</option>
+                </select>
+            </div>
+            <button onclick="attemptLogin()" class="btn-primary">دخول</button>
         </div>
     </div>
 
-    <div id="userDashboard" class="dashboard-wrapper" style="display:none;">
-        <aside class="sidebar-user">
+    <div id="dashboard" class="dashboard-wrapper" style="display:none;">
+        
+        <aside class="sidebar-right">
             <div class="profile-card">
-                <div class="avatar-box">
-                    <img src="https://via.placeholder.com/100" id="userImg">
-                    <span class="online-dot"></span>
+                <div class="avatar-container">
+                    <img src="https://via.placeholder.com/100" id="userAvatar" alt="Avatar">
+                    <span class="status-dot"></span>
                 </div>
-                <h3 id="displayUserName">الاسم</h3>
-                <p id="displayHandle">@handle</p>
-                <button class="settings-btn">الاعدادات</button>
+                <h3 id="userNameDisplay">اسم المستخدم</h3>
+                <p id="userHandle">@handle</p>
+                <div id="adminBadge" style="display:none;" class="badge-admin">🛡️ مشرف الموقع</div>
+                
+                <button class="btn-small">⚙️ الإعدادات</button>
             </div>
-            <div class="stats-box">
-                <div class="stat-line"><span>الرتبة:</span> <span id="rankVal">عادي</span></div>
-                <div class="stat-line"><span>كوينز:</span> <span id="coinVal" class="gold">0</span> 💰</div>
-                <div class="level-section">
-                    <div class="level-info">المستوى: <b id="lvlNum">0</b></div>
-                    <div class="progress-container"><div id="lvlBar" class="progress-bar"></div></div>
-                    <small><span id="msgCount">0</span> / <span id="nextTarget">100</span> رسالة</small>
+
+            <div class="stats-list">
+                <div class="stat-row">
+                    <span>الرتبة:</span>
+                    <span id="rankDisplay">عادي</span>
                 </div>
-                <div class="stat-line"><span>الجنس:</span> <span id="displayGender">ذكر</span></div>
-                <div class="stat-line"><span>الدولة:</span> <span>Egypt</span></div>
+                <div class="stat-row">
+                    <span>الكوينز:</span>
+                    <span id="coinDisplay" class="coin-text">0</span> 💰
+                </div>
+                <div class="stat-row" id="taxRow" style="display:none;">
+                    <span>الضريبة:</span>
+                    <span style="color:red;">15% (مفعلة)</span>
+                </div>
+
+                <div class="level-box">
+                    <div class="lvl-header">
+                        <span>المستوى: <b id="lvlVal">0</b></span>
+                    </div>
+                    <div class="progress-track">
+                        <div id="lvlBar" class="progress-fill"></div>
+                    </div>
+                    <small><span id="msgCurrent">0</span> / <span id="msgTarget">100</span> رسالة</small>
+                </div>
+
+                <div class="stat-row">
+                    <span>التقييم:</span>
+                    <span id="userRating">⭐⭐⭐⭐⭐</span>
+                </div>
             </div>
         </aside>
 
-        <main class="main-content">
-            <div id="homeView" class="view-panel">
-                <img src="https://via.placeholder.com/120" class="welcome-img">
-                <h1>أهلاً وسهلاً بك مرة أخرى</h1>
-                <p>لقد قمنا بتحديث موقعنا نأمل أن ينال تجربة ناجحة لك.</p>
+        <main class="main-area">
+            
+            <div id="viewHome" class="content-view">
+                <div class="welcome-msg">
+                    <div class="icon-circle">👋</div>
+                    <h1>مرحباً بك في مجتمعنا</h1>
+                    <p>اختر قسماً من القائمة الجانبية أو ابدأ الدردشة.</p>
+                    <button onclick="simulateMessages(500)" style="margin-top:20px; cursor:pointer; padding:10px;">➕ محاكاة 500 رسالة</button>
+                </div>
             </div>
 
-            <div id="rewardsView" class="view-panel" style="display:none;">
-                <div class="reward-header">🎉 لا توجد مكافآت جديدة الآن</div>
-                <p>قد تظهر مكافآتك الخاصة قريباً — عد لاحقاً ❤️</p>
-                <div class="timer-display">
-                    <p>موعد استلام الكوينز القادم:</p>
-                    <div id="timerClock">59:59</div>
-                    <small>رتبتك تمنحك: <b id="rateDisplay">1000</b> كوينز/ساعة</small>
+            <div id="viewRewards" class="content-view" style="display:none;">
+                <div class="rewards-card">
+                    <h2>نظام المكافآت</h2>
+                    <p class="status-text">🎉 واصل التفاعل لفتح الصناديق</p>
+                    
+                    <div class="timer-box">
+                        <p>موعد الراتب القادم:</p>
+                        <div id="countdown">59:59</div>
+                        <small>دخلك بالساعة: <b id="hourlyIncome">1000</b> كوينز</small>
+                    </div>
+
+                    <button class="btn-blue">🔄 تحديث الحالة</button>
                 </div>
-                <button class="refresh-btn">🔄 تحديث المكافآت</button>
             </div>
+
+            <div id="viewAdmin" class="content-view" style="display:none;">
+                <h2 style="color:black; text-shadow:0 0 5px white;">🛡️ لوحة القيادة العليا</h2>
+                <div class="admin-stats-grid">
+                    <div class="admin-card">👥 المستخدمين: <b>1,520</b></div>
+                    <div class="admin-card">💰 خزينة الموقع: <b>15.2M</b></div>
+                    <div class="admin-card">🚫 المحظورين: <b>12</b></div>
+                </div>
+                <div class="admin-controls">
+                    <h3>إجراءات سريعة:</h3>
+                    <button class="btn-danger">إيقاف الشات فوراً</button>
+                    <button class="btn-danger">حذف الجروبات المخالفة</button>
+                    <button class="btn-blue">توزيع كوينز (إيفنت)</button>
+                    <button class="btn-blue">سجل التحويلات (الضريبة)</button>
+                </div>
+            </div>
+
         </main>
 
-        <aside class="sidebar-actions">
-            <div class="action-grid">
-                <div class="action-item" onclick="showView('rewards')">🏆 المكافآت</div>
-                <div class="action-item" onclick="showView('shop')">🛍️ المتجر</div>
+        <aside class="sidebar-left">
+            <div class="nav-grid">
+                <div class="nav-btn admin-btn-style" id="btnAdminPanel" style="display:none;" onclick="switchView('admin')">⚙️ الإدارة</div>
+                <div class="nav-btn" onclick="switchView('rewards')">🏆 المكافآت</div>
+                <div class="nav-btn" onclick="switchView('shop')">🛍️ المتجر</div>
+                <div class="nav-btn" onclick="switchView('home')">📩 الرسائل</div>
             </div>
         </aside>
+
     </div>
 
     <script src="script.js"></script>
