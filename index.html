@@ -297,5 +297,25 @@
         function toggleQuickMenu() { alert("قريباً: قائمة الهدايا!"); }
         function createGroup() { alert("تحتاج 30,000 كوينز لإنشاء جروب!"); }
     </script>
+<script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-database-compat.js"></script>
+
+    <script>
+      const firebaseConfig = {
+        apiKey: "AIzaSyDuVHERKp0m35Ti2T6Pa4tE_PbngqDli_Y",
+        authDomain: "haw3ry-sofa.firebaseapp.com",
+        databaseURL: "https://haw3ry-sofa-default-rtdb.firebaseio.com",
+        projectId: "haw3ry-sofa",
+        storageBucket: "haw3ry-sofa.firebasestorage.app",
+        messagingSenderId: "812684519022",
+        appId: "1:812684519022:web:b49be4ea7200763515a87f"
+      };
+
+      firebase.initializeApp(firebaseConfig);
+      const database = firebase.database();
+      
+      console.log("السيرفر شغال يا سوفا! 🚀");
+    </script>
 </body>
 </html>
+
