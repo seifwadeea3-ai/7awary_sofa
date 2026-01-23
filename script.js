@@ -1,98 +1,33 @@
-// ======== 1. قاعدة البيانات (تخزين في المتصفح) ========
-let usersData = JSON.parse(localStorage.getItem('chatUsers')) || {}; 
-let currentUser = null;
-
-// ======== 2. وظائف الحسابات ========
-
-function createAccount() {
-    // 1. طلب الاسم
-    let name = prompt("اكتب اسم المستخدم الجديد:");
-    if (!name) return; // لو داس إلغاء
-    if (usersData[name]) return alert("الاسم ده محجوز، جرب اسم تاني!");
-
-    // 2. طلب الباسورد
-    let pass = prompt("اكتب كلمة المرور:");
-    if (!pass) return;
-
-    // 3. حفظ البيانات
-    usersData[name] = { 
-        password: pass, 
-        coins: 1000 // هدية 1000 كوينز
-    };
-    
-    // حفظ في الذاكرة الدائمة
-    localStorage.setItem('chatUsers', JSON.stringify(usersData));
-    alert("جدع تم إنشاء الحساب يوحش دوس على (دخول) دلوقتي .");
+:root {
+    --pink: #e91e63;
+    --dark-bg: #0f1619;
+    --sidebar: #1a262c;
+    --accent: #1abc9c;
+    --border: #2d3748;
 }
 
-function login() {
-    // قراءة البيانات من الخانات
-    let nameInput = document.getElementById("username-input").value;
-    let passInput = document.getElementById("password-input").value;
+body { margin: 0; font-family: 'Segoe UI', sans-serif; background: var(--dark-bg); color: #cbd5e0; overflow: hidden; }
 
-    // التحقق
-    if (!nameInput || !passInput) return alert("اكتب الاسم والباسورد!");
-    
-    if (!usersData[nameInput]) {
-        return alert("الحساب غير موجود! دوس على (إنشاء حساب) الأول.");
-    }
+/* تصميم صفحة الدخول */
+.login-screen { display: flex; height: 100vh; }
+.login-left-art { flex: 2; background: url('https://w0.peakpx.com/wallpaper/317/998/HD-wallpaper-digital-art.jpg') no-repeat center; background-size: cover; }
+.login-right-form { flex: 1; background: #f4f7f6; display: flex; align-items: center; padding: 40px; color: #333; }
+.enter-btn { width: 100%; padding: 15px; background: var(--pink); color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 18px; }
 
-    if (usersData[nameInput].password !== passInput) {
-        return alert("كلمة المرور غلط!");
-    }
+/* تصميم لوحة التحكم */
+.dashboard-wrapper { display: flex; height: 100vh; }
+.sidebar-user, .sidebar-actions { width: 300px; background: var(--sidebar); border-left: 1px solid var(--border); padding: 20px; }
+.main-content { flex: 1; display: flex; align-items: center; justify-content: center; text-align: center; }
 
-    // نجاح الدخول
-    currentUser = nameInput;
-    startApp();
-}
+.profile-card { text-align: center; border-bottom: 1px solid var(--border); padding-bottom: 20px; }
+.avatar-box img { width: 90px; height: 90px; border-radius: 50%; border: 3px solid var(--accent); }
 
-// ======== 3. تشغيل الموقع ========
+.progress-container { background: #111; height: 10px; border-radius: 5px; margin: 10px 0; overflow: hidden; }
+.progress-bar { background: var(--accent); height: 100%; width: 0%; transition: 0.5s; }
 
-function startApp() {
-    // إخفاء شاشة الدخول
-    document.getElementById("login-screen").classList.add("hidden");
-    
-    // إظهار الشات
-    document.getElementById("main-app").classList.remove("hidden");
-    
-    // عرض البيانات
-    document.getElementById("display-name").innerText = currentUser;
-    updateCoins();
+.timer-display { background: rgba(0,0,0,0.2); padding: 20px; border-radius: 10px; border: 1px dashed var(--accent); margin: 20px 0; }
+#timerClock { font-size: 40px; color: #e74c3c; font-weight: bold; }
 
-    // تشغيل عداد الكوينز (بيزيد 100 كل دقيقة)
-    setInterval(function() {
-        usersData[currentUser].coins += 100;
-        localStorage.setItem('chatUsers', JSON.stringify(usersData));
-        updateCoins();
-    }, 60000);
-}
-
-function updateCoins() {
-    document.getElementById("coins-display").innerText = usersData[currentUser].coins;
-}
-
-function logout() {
-    location.reload(); // إعادة تحميل الصفحة للخروج
-}
-
-// ======== 4. الشات ========
-
-function sendMessage() {
-    let input = document.getElementById("msg-input");
-    let text = input.value;
-    
-    if (text === "") return; // لو فاضي متبعتش حاجة
-
-    let chatBox = document.getElementById("chat-box");
-    
-    // إنشاء رسالة جديدة
-    let newMsg = document.createElement("div");
-    newMsg.className = "msg";
-    newMsg.innerHTML = `<span class="username">${currentUser}:</span> ${text}`;
-    
-    chatBox.appendChild(newMsg);
-    
-    // تنظيف الخانة والنزول لتحت
-    input.value = "";
-    chatBox.scrollTop = chatBox.scrollHeight;
-}
+.action-grid { display: grid; gap: 15px; }
+.action-item { background: #243139; padding: 25px; border-radius: 10px; text-align: center; cursor: pointer; border: 1px solid var(--border); }
+.action-item:hover { border-color: var(--accent); color: var(--accent); }
