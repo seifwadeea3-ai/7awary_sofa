@@ -2,7 +2,8 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <title>Sofa Chat System - Badges Edition</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sofa Chat System</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -11,59 +12,77 @@
         <div class="login-modal">
             <h2>دخول النظام</h2>
             <input type="text" id="loginName" placeholder="اسم المستخدم">
-            <input type="password" id="loginPass" placeholder="كلمة المرور">
+            <input type="password" id="loginPass" placeholder="كلمة المرور (للمشرف)">
             <button onclick="attemptLogin()" class="btn-main">دخول</button>
         </div>
     </div>
 
     <div id="dashboard" class="app-container" style="display:none;">
+        
         <aside class="sidebar-right">
             <div class="profile-box">
-                <img src="https://i.pravatar.cc/150?u=sofa" class="avatar">
+                <div class="avatar-circle">
+                    <img src="https://i.pravatar.cc/150?u=sofa" id="userAvatar">
+                </div>
                 <h3 id="userNameDisplay">الاسم</h3>
-                
-                <div id="userBadgesRow" class="badges-row"></div>
-                
                 <span id="adminBadge" class="badge-black" style="display:none;">🛡️ المشرف العام</span>
                 <button class="btn-edit" onclick="openSettings()">⚙️ الإعدادات</button>
             </div>
             
             <div class="stats-container">
+                <div class="stat-item">الرتبة: <b id="rankDisplay">عادي</b></div>
                 <div class="stat-item">الكوينز: <b id="coinDisplay" class="gold-text">0</b> 💰</div>
                 <div class="level-box">
                     <span>المستوى: <b id="lvlVal">0</b></span>
                     <div class="progress-track"><div id="lvlBar" class="progress-fill"></div></div>
+                    <small><span id="msgCurrent">0</span> / <span id="msgTarget">100</span> رسالة</small>
                 </div>
             </div>
         </aside>
 
         <main class="main-content">
             <div id="viewHome" class="view-panel">
-                <div id="chatBox" class="chat-msgs"></div>
-                <div class="chat-input">
-                    <input type="text" id="chatInput" placeholder="اكتب رسالة..." onkeypress="if(event.key==='Enter') sendMessage()">
-                    <button onclick="sendMessage()">إرسال</button>
+                <div class="online-users">
+                    <h5>👥 المتصلون (<span id="totalOnline">0</span>)</h5>
+                    <div id="onlineList" class="user-row"></div>
+                </div>
+                <div class="chat-area">
+                    <div id="chatBox" class="chat-msgs"></div>
+                    <div class="chat-input">
+                        <input type="text" id="chatInput" placeholder="اكتب هنا..." onkeypress="if(event.key==='Enter') sendMessage()">
+                        <button onclick="sendMessage()">إرسال</button>
+                    </div>
                 </div>
             </div>
 
             <div id="viewGroups" class="view-panel" style="display:none;">
-                <button class="btn-create" onclick="openCreateGroupModal()">➕ إنشاء جروب (30,000 كوينز)</button>
+                <div class="panel-header">
+                    <h3>🌐 المجموعات</h3>
+                    <button class="btn-create" onclick="openCreateGroupModal()">➕ إنشاء جروب (30,000 كوينز)</button>
+                </div>
                 <div id="groupsGrid" class="groups-grid"></div>
             </div>
 
-            <div id="viewShop" class="view-panel" style="display:none;">
-                <h3>🏅 متجر الأوسمة الملكية</h3>
-                <div class="shop-grid" id="shopGrid"></div>
+            <div id="viewAdmin" class="view-panel" style="display:none;">
+                <h2 class="admin-title">🛡️ لوحة التحكم الإدارية</h2>
+                <div class="admin-actions">
+                    <button class="btn-danger" onclick="adminAction('تعطيل الشات العام')">تعطيل الشات العام</button>
+                    <button class="btn-danger" onclick="adminAction('تصفير كل الرسائل')">تصفير السجلات</button>
+                    <button class="btn-primary" onclick="adminAction('توزيع كوينز')">توزيع مكافأة للجميع</button>
+                </div>
             </div>
         </main>
 
         <aside class="sidebar-left">
             <nav class="nav-menu">
-                <div class="nav-item" onclick="switchView('home')">🏠 الشات</div>
+                <div class="nav-item" onclick="switchView('home')">🏠 الشات العام</div>
                 <div class="nav-item" onclick="switchView('groups')">👥 الجروبات</div>
-                <div class="nav-item" style="background:#d4af37; color:#000" onclick="switchView('shop')">🛒 المتجر</div>
                 <div id="adminTab" class="nav-item nav-admin" style="display:none;" onclick="switchView('admin')">🛡️ الإدارة</div>
             </nav>
+            <div class="timer-box">
+                <p>الراتب القادم:</p>
+                <div id="countdown">59:59</div>
+            </div>
         </aside>
     </div>
 
