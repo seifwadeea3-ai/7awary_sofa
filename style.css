@@ -1,33 +1,63 @@
 :root {
-    --pink: #e91e63;
-    --dark-bg: #0f1619;
-    --sidebar: #1a262c;
+    --bg-dark: #0f1619;
+    --panel-bg: #1a262c;
     --accent: #1abc9c;
-    --border: #2d3748;
+    --text-main: #cbd5e0;
+    --gold: #f1c40f;
+    --admin-black: #000000;
 }
 
-body { margin: 0; font-family: 'Segoe UI', sans-serif; background: var(--dark-bg); color: #cbd5e0; overflow: hidden; }
+* { box-sizing: border-box; }
+body { margin: 0; font-family: 'Segoe UI', Tahoma, sans-serif; background: var(--bg-dark); color: var(--text-main); direction: rtl; }
 
-/* تصميم صفحة الدخول */
-.login-screen { display: flex; height: 100vh; }
-.login-left-art { flex: 2; background: url('https://w0.peakpx.com/wallpaper/317/998/HD-wallpaper-digital-art.jpg') no-repeat center; background-size: cover; }
-.login-right-form { flex: 1; background: #f4f7f6; display: flex; align-items: center; padding: 40px; color: #333; }
-.enter-btn { width: 100%; padding: 15px; background: var(--pink); color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 18px; }
+/* شاشة الدخول */
+.login-wrapper { display: flex; align-items: center; justify-content: center; height: 100vh; background: url('https://wallpaperaccess.com/full/2109.jpg') center/cover; }
+.login-box { background: rgba(255,255,255,0.95); padding: 40px; border-radius: 10px; width: 350px; text-align: center; color: #333; }
+.input-group { margin-bottom: 15px; }
+.input-group input, .input-group select { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; }
+.btn-primary { width: 100%; padding: 12px; background: var(--accent); color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }
 
-/* تصميم لوحة التحكم */
+/* الداشبورد */
 .dashboard-wrapper { display: flex; height: 100vh; }
-.sidebar-user, .sidebar-actions { width: 300px; background: var(--sidebar); border-left: 1px solid var(--border); padding: 20px; }
-.main-content { flex: 1; display: flex; align-items: center; justify-content: center; text-align: center; }
+.sidebar-right, .sidebar-left { width: 300px; background: var(--panel-bg); padding: 20px; border-left: 1px solid #2d3748; display: flex; flex-direction: column; gap: 20px; }
+.main-area { flex: 1; padding: 20px; display: flex; align-items: center; justify-content: center; }
 
-.profile-card { text-align: center; border-bottom: 1px solid var(--border); padding-bottom: 20px; }
-.avatar-box img { width: 90px; height: 90px; border-radius: 50%; border: 3px solid var(--accent); }
+/* البروفايل */
+.profile-card { text-align: center; border-bottom: 1px solid #2d3748; padding-bottom: 20px; }
+.avatar-container { position: relative; display: inline-block; }
+.avatar-container img { width: 90px; height: 90px; border-radius: 50%; border: 3px solid var(--accent); }
+.status-dot { position: absolute; bottom: 5px; right: 5px; width: 15px; height: 15px; background: #2ecc71; border-radius: 50%; border: 2px solid var(--panel-bg); }
 
-.progress-container { background: #111; height: 10px; border-radius: 5px; margin: 10px 0; overflow: hidden; }
-.progress-bar { background: var(--accent); height: 100%; width: 0%; transition: 0.5s; }
+/* ستايل اسم المشرف الخاص */
+.admin-name-style {
+    color: var(--admin-black) !important;
+    font-weight: 900;
+    font-size: 24px;
+    text-shadow: 0 0 5px rgba(255,255,255,0.8); /* توهج أبيض ليظهر الأسود */
+    letter-spacing: 1px;
+}
+.badge-admin { background: #000; color: #fff; padding: 3px 10px; border-radius: 10px; font-size: 11px; margin-top: 5px; display: inline-block; }
 
-.timer-display { background: rgba(0,0,0,0.2); padding: 20px; border-radius: 10px; border: 1px dashed var(--accent); margin: 20px 0; }
-#timerClock { font-size: 40px; color: #e74c3c; font-weight: bold; }
+/* الإحصائيات والمستويات */
+.stat-row { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 14px; }
+.coin-text { color: var(--gold); font-weight: bold; }
 
-.action-grid { display: grid; gap: 15px; }
-.action-item { background: #243139; padding: 25px; border-radius: 10px; text-align: center; cursor: pointer; border: 1px solid var(--border); }
-.action-item:hover { border-color: var(--accent); color: var(--accent); }
+.level-box { background: rgba(0,0,0,0.2); padding: 10px; border-radius: 5px; }
+.progress-track { background: #111; height: 8px; border-radius: 5px; margin: 5px 0; overflow: hidden; }
+.progress-fill { background: var(--accent); height: 100%; width: 0%; transition: width 0.5s; }
+
+/* المحتوى والأزرار */
+.content-view { width: 100%; text-align: center; animation: fadeIn 0.3s; }
+.nav-grid { display: grid; gap: 10px; }
+.nav-btn { background: #243139; padding: 20px; border-radius: 8px; cursor: pointer; text-align: center; border: 1px solid #34495e; transition: 0.3s; }
+.nav-btn:hover { border-color: var(--accent); color: var(--accent); }
+.admin-btn-style { background: #000 !important; color: #fff !important; border: 1px solid #444; }
+
+/* قسم المكافآت والإدارة */
+.rewards-card { background: var(--panel-bg); padding: 30px; border-radius: 15px; display: inline-block; width: 80%; }
+.timer-box { background: rgba(0,0,0,0.3); padding: 15px; margin: 20px 0; border-radius: 10px; border: 1px dashed var(--accent); }
+#countdown { font-size: 40px; color: #e74c3c; font-weight: bold; }
+.btn-blue { background: #3498db; color: white; border: none; padding: 10px 25px; border-radius: 5px; cursor: pointer; }
+.btn-danger { background: #c0392b; color: white; border: none; padding: 10px 25px; border-radius: 5px; cursor: pointer; margin: 5px; }
+
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
