@@ -2,66 +2,84 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>موقع الشات العربي</title>
-    <style>
-        body { font-family: Tahoma, sans-serif; background-color: #121212; color: white; text-align: center; margin: 0; }
-        .container { max-width: 600px; margin: auto; padding: 20px; }
-        
-        /* تصميم الأزرار والحقول */
-        input { padding: 10px; width: 80%; margin: 5px; border-radius: 5px; border: none; }
-        button { padding: 10px 20px; margin: 5px; border-radius: 5px; border: none; cursor: pointer; color: white; font-weight: bold; }
-        button.green { background-color: #28a745; }
-        button.blue { background-color: #007bff; }
-        button:hover { opacity: 0.8; }
-
-        /* الأقسام */
-        .box { background: #1e1e1e; padding: 20px; border-radius: 10px; border: 1px solid #333; margin-bottom: 20px; }
-        .hidden { display: none !important; }
-
-        /* الشات */
-        #chat-box { height: 250px; overflow-y: auto; background: #000; padding: 10px; border-radius: 5px; text-align: right; margin-bottom: 10px; }
-        .msg { background: #333; padding: 5px 10px; margin: 5px; border-radius: 5px; display: inline-block; width: 90%; }
-        .username { color: #ffc107; font-weight: bold; }
-    </style>
+    <title>دردشة كتابية - لوحة التحكم</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <div class="container">
-        
-        <div id="login-screen" class="box">
-            <h1>💬 موقع الشات العربي</h1>
-            <p>سجل دخولك عشان تبدأ الدردشة وتجمع كوينز!</p>
-            
-            <input type="text" id="username-input" placeholder="اسم المستخدم">
-            <input type="password" id="password-input" placeholder="كلمة المرور">
-            <br>
-            <button class="green" onclick="login()">دخول</button>
-            <button class="blue" onclick="createAccount()">إنشاء حساب جديد</button>
+    <div id="loginPage" class="login-screen">
+        <div class="login-left-art"></div>
+        <div class="login-right-form">
+            <div class="login-form-container">
+                <h2>ضيف ( زائر )</h2>
+                <p>قم بإنشاء حساب مستخدم ضيف</p>
+                <div class="input-group">
+                    <label>الاسم المستعار</label>
+                    <input type="text" id="inputName" placeholder="اكتب اسمك هنا...">
+                </div>
+                <div class="input-group">
+                    <label>جنس *</label>
+                    <select id="inputGender">
+                        <option value="ذكر">ذكر</option>
+                        <option value="أنثى">أنثى</option>
+                    </select>
+                </div>
+                <button class="enter-btn" onclick="loginUser()">تسجيل الدخول</button>
+            </div>
         </div>
+    </div>
 
-        <div id="main-app" class="box hidden">
-            <div style="display: flex; justify-content: space-between; margin-bottom: 15px;">
-                <span>👤 مرحباً: <span id="display-name" style="color: #00bcd4;"></span></span>
-                <span>💰 الكوينز: <span id="coins-display">0</span></span>
+    <div id="userDashboard" class="dashboard-wrapper" style="display:none;">
+        <aside class="sidebar-user">
+            <div class="profile-card">
+                <div class="avatar-box">
+                    <img src="https://via.placeholder.com/100" id="userImg">
+                    <span class="online-dot"></span>
+                </div>
+                <h3 id="displayUserName">الاسم</h3>
+                <p id="displayHandle">@handle</p>
+                <button class="settings-btn">الاعدادات</button>
+            </div>
+            <div class="stats-box">
+                <div class="stat-line"><span>الرتبة:</span> <span id="rankVal">عادي</span></div>
+                <div class="stat-line"><span>كوينز:</span> <span id="coinVal" class="gold">0</span> 💰</div>
+                <div class="level-section">
+                    <div class="level-info">المستوى: <b id="lvlNum">0</b></div>
+                    <div class="progress-container"><div id="lvlBar" class="progress-bar"></div></div>
+                    <small><span id="msgCount">0</span> / <span id="nextTarget">100</span> رسالة</small>
+                </div>
+                <div class="stat-line"><span>الجنس:</span> <span id="displayGender">ذكر</span></div>
+                <div class="stat-line"><span>الدولة:</span> <span>Egypt</span></div>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <div id="homeView" class="view-panel">
+                <img src="https://via.placeholder.com/120" class="welcome-img">
+                <h1>أهلاً وسهلاً بك مرة أخرى</h1>
+                <p>لقد قمنا بتحديث موقعنا نأمل أن ينال تجربة ناجحة لك.</p>
             </div>
 
-            <div id="chat-box">
-                <div class="msg">مرحباً بك في الشات! ابدأ الكلام..</div>
+            <div id="rewardsView" class="view-panel" style="display:none;">
+                <div class="reward-header">🎉 لا توجد مكافآت جديدة الآن</div>
+                <p>قد تظهر مكافآتك الخاصة قريباً — عد لاحقاً ❤️</p>
+                <div class="timer-display">
+                    <p>موعد استلام الكوينز القادم:</p>
+                    <div id="timerClock">59:59</div>
+                    <small>رتبتك تمنحك: <b id="rateDisplay">1000</b> كوينز/ساعة</small>
+                </div>
+                <button class="refresh-btn">🔄 تحديث المكافآت</button>
             </div>
-            
-            <input type="text" id="msg-input" placeholder="اكتب رسالتك هنا...">
-            <button class="green" onclick="sendMessage()">إرسال 🚀</button>
+        </main>
 
-            <hr style="border-color: #333; margin: 20px 0;">
-
-            <button onclick="alert('قريباً: شراء رتب وأوسمة!')">المتجر 🛒</button>
-            <button onclick="logout()">خروج 🚪</button>
-        </div>
-
+        <aside class="sidebar-actions">
+            <div class="action-grid">
+                <div class="action-item" onclick="showView('rewards')">🏆 المكافآت</div>
+                <div class="action-item" onclick="showView('shop')">🛍️ المتجر</div>
+            </div>
+        </aside>
     </div>
 
     <script src="script.js"></script>
 </body>
 </html>
-
