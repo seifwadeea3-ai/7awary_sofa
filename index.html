@@ -1,51 +1,105 @@
-<aside class="sidebar-right">
-    <div class="profile-card-dark">
-        <div class="profile-header-gradient">
-            <div class="user-avatar-container">
-                <img src="https://i.pravatar.cc/80?u=its_sofa" class="u-avatar-large">
-                <div class="online-dot"></div>
-            </div>
-        </div>
-        
-        <div class="profile-info-dark">
-            <h4 id="userNameDisplay"></h4>
-            <span id="adminBadge" class="badge-black" style="display:none;">المشرف العام</span>
-            
-            <div class="stats-row">
-                <p>الرتبة: <span id="rankDisplay"></span></p>
-                <p>الكوينز: <span id="coinDisplay"></span> 💰</p>
-                <p>الرسايل: <span id="msgCurrent"></span></p>
-            </div>
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>7awary_sofa | لوحة التحكم</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
 
-            <div class="mini-section">
-                <h6>الهدايا</h6>
-                <small>لا توجد هدايا حتى الآن</small>
+    <div id="loginScreen" class="overlay">
+        <div class="login-card">
+            <div class="logo-text">7awary_sofa</div>
+            <p>سجل دخولك للانضمام للسوفا</p>
+            <div class="sofa-form">
+                <input type="text" id="loginName" placeholder="اسم المستخدم" class="input-field">
+                <input type="password" id="loginPass" placeholder="كلمة المرور" class="input-field">
+                <button onclick="attemptLogin()" class="btn-login">دخول الآن</button>
             </div>
-
-            <div class="mini-section">
-                <h6>الأوسمة</h6>
-                <div class="badges-row">
-                    <span title="مصر">🇪🇬</span>
-                    <span title="عضو مميز">🎖️</span>
-                </div>
-            </div>
-
-            <div class="upgrade-card-dark">
-                <p>🎯 الترقية إلى المستوى <span id="lvlValNext">1</span></p>
-                <div class="progress-track">
-                    <div id="lvlBar" class="progress-fill"></div>
-                </div>
-                <small>المستوى الحالي: <span id="lvlVal">0</span></small>
-            </div>
-
-            <button class="btn-settings-blue" onclick="openSettings()">الإعدادات العامة</button>
         </div>
     </div>
-    
-    <nav class="nav-menu">
-        <div class="nav-item" onclick="switchView('chat')">الدردشة العامة</div>
-        <div class="nav-item" onclick="switchView('groups')">المجموعات</div>
-        <div class="nav-item nav-admin" id="adminTab" style="display:none;" onclick="switchView('admin')">لوحة المشرف</div>
-    </nav>
-    <div class="timer-box">الهدية: <span id="countdown">00:00</span></div>
-</aside>
+
+    <div id="dashboard" class="app-container" style="display: none;">
+        
+        <aside class="sidebar-right">
+            <div class="profile-card-new">
+                <div class="profile-header-bg">
+                    <img src="https://i.pravatar.cc/70" class="u-avatar-main" id="userAvatar">
+                </div>
+                
+                <div class="profile-body">
+                    <div id="userNameDisplay"></div>
+                    <span id="adminBadge" class="badge-black" style="display:none;">المشرف العام</span>
+                    
+                    <div class="stats-grid">
+                        <p>الرتبة: <span id="rankDisplay"></span></p>
+                        <p>الكوينز: <span id="coinDisplay"></span> 💰</p>
+                        <p>الرسايل: <span id="msgCurrent"></span></p>
+                    </div>
+
+                    <div class="mini-box">
+                        <small>الهدايا</small>
+                        <div>لا توجد هدايا</div>
+                    </div>
+
+                    <div class="mini-box">
+                        <small>الأوسمة</small>
+                        <div class="badges-list">🇪🇬 🎖️</div>
+                    </div>
+
+                    <div class="upgrade-section">
+                        <p>🎯 الترقية للمستوى <span id="lvlValNext">1</span></p>
+                        <div class="progress-track"><div id="lvlBar" class="progress-fill"></div></div>
+                        <small>المستوى الحالي: <span id="lvlVal">0</span></small>
+                    </div>
+                    
+                    <button class="btn-blue-soft" onclick="openSettings()">الإعدادات العامة</button>
+                </div>
+            </div>
+            
+            <nav class="nav-menu">
+                <div class="nav-item" onclick="switchView('chat')">الدردشة العامة</div>
+                <div class="nav-item" onclick="switchView('groups')">المجموعات</div>
+                <div class="nav-item nav-admin" id="adminTab" style="display:none;" onclick="switchView('admin')">لوحة المشرف</div>
+            </nav>
+            <div class="timer-box" style="text-align:center;">الهدية: <span id="countdown">00:00</span></div>
+        </aside>
+
+        <main class="main-content">
+            <div id="viewChat" class="view-panel">
+                <h3>الغرفة العامة</h3>
+                <div id="chatBox" class="chat-msgs"></div>
+                <div class="chat-input-area">
+                    <input type="text" id="chatInput" placeholder="اكتب رسالتك هنا...">
+                    <button onclick="sendMessage()" class="btn-main">إرسال</button>
+                </div>
+            </div>
+
+            <div id="viewGroups" class="view-panel" style="display:none;">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <h3>المجموعات</h3>
+                    <button class="btn-create" onclick="openCreateGroupModal()">+ إنشاء جروب</button>
+                </div>
+                <div id="groupsGrid" class="groups-grid"></div>
+            </div>
+
+            <div id="viewAdmin" class="view-panel" style="display:none;">
+                <h3>صلاحيات المشرف Sofa</h3>
+                <div class="admin-actions" style="display:flex; flex-direction:column; gap:10px;">
+                    <button class="btn-danger" onclick="adminAction('تعطيل الجروبات')">تعطيل كافة الجروبات</button>
+                    <button class="btn-danger" onclick="adminAction('حظر الـ IP')">حظر شامل للمخالفين</button>
+                </div>
+            </div>
+        </main>
+
+        <aside class="sidebar-left">
+            <h4>المتواجدون (<span id="totalOnline">0</span>)</h4>
+            <div id="onlineList" style="display:flex; flex-direction:column; gap:15px; align-items:center;"></div>
+        </aside>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
