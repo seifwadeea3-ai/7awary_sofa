@@ -5,7 +5,6 @@ let groups = [
     { id: 2, name: "سيف تيم", icon: "🔥", active: true }
 ];
 
-// 1. تسجيل الدخول
 function attemptLogin() {
     const name = document.getElementById('loginName').value.trim();
     const pass = document.getElementById('loginPass').value;
@@ -17,6 +16,7 @@ function attemptLogin() {
         document.getElementById('adminTab').style.display = 'block';
     } else {
         currentUser.username = name || "زائر";
+        currentUser.rank = "عضو";
     }
 
     document.getElementById('loginScreen').style.display = 'none';
@@ -26,7 +26,6 @@ function attemptLogin() {
     setInterval(timerLogic, 1000);
 }
 
-// 2. تحديث الواجهة والمستويات
 function updateUI() {
     document.getElementById('userNameDisplay').innerText = currentUser.username;
     document.getElementById('coinDisplay').innerText = currentUser.coins.toLocaleString();
@@ -39,7 +38,6 @@ function updateUI() {
     document.getElementById('lvlBar').style.width = (lvl * 10) + "%";
 }
 
-// 3. نظام الشات
 function sendMessage() {
     const input = document.getElementById('chatInput');
     if (!input.value.trim()) return;
@@ -52,11 +50,10 @@ function sendMessage() {
     
     input.value = "";
     chatBox.scrollTop = chatBox.scrollHeight;
-    currentUser.messages += 15; // زيادة النقاط
+    currentUser.messages += 15;
     updateUI();
 }
 
-// 4. إدارة المجموعات (الإنشاء بـ 30 ألف)
 function renderGroups() {
     const grid = document.getElementById('groupsGrid');
     grid.innerHTML = "";
@@ -68,8 +65,8 @@ function renderGroups() {
                 <button class="btn-main" onclick="alert('جاري الانضمام...')">${g.active ? 'دخول' : 'معطل'}</button>
                 ${currentUser.isAdmin ? `
                     <div style="margin-top:10px">
-                        <button onclick="toggleGroup(${g.id})" style="background:orange; border:none; padding:5px; cursor:pointer">تعطيل</button>
-                        <button onclick="deleteGroup(${g.id})" style="background:red; color:#fff; border:none; padding:5px; cursor:pointer">حذف</button>
+                        <button class="btn-danger" style="background:orange" onclick="toggleGroup(${g.id})">تعطيل</button>
+                        <button class="btn-danger" onclick="deleteGroup(${g.id})">حذف</button>
                     </div>
                 ` : ""}
             </div>`;
@@ -88,14 +85,13 @@ function openCreateGroupModal() {
         groups.push({ id: Date.now(), name: n, icon: "💬", active: true });
         renderGroups();
         updateUI();
-        alert("✅ تم إنشاء الجروب بنجاح.");
     }
 }
 
-// 5. التحكم في العرض والوقت
 function switchView(v) {
     document.querySelectorAll('.view-panel').forEach(p => p.style.display = 'none');
-    document.getElementById('view' + v.charAt(0).toUpperCase() + v.slice(1)).style.display = 'block';
+    const viewId = 'view' + v.charAt(0).toUpperCase() + v.slice(1);
+    document.getElementById(viewId).style.display = 'block';
     if(v === 'groups') renderGroups();
 }
 
@@ -116,7 +112,7 @@ function renderOnline() {
     const users = ["سيف", "أحمد", "ليلى", "نور"];
     document.getElementById('totalOnline').innerText = users.length;
     users.forEach(u => {
-        list.innerHTML += `<div style="text-align:center"><img src="https://i.pravatar.cc/40?u=${u}" class="u-avatar"><br><small>${u}</small></div>`;
+        list.innerHTML += `<div style="text-align:center; margin-bottom:10px;"><img src="https://i.pravatar.cc/45?u=${u}" class="u-avatar"><br><small>${u}</small></div>`;
     });
 }
 
@@ -127,11 +123,13 @@ function toggleGroup(id) {
 }
 
 function deleteGroup(id) {
-    groups = groups.filter(x => x.id !== id);
-    renderGroups();
+    if(confirm("هل أنت متأكد من حذف هذا الجروب نهائياً؟")) {
+        groups = groups.filter(x => x.id !== id);
+        renderGroups();
+    }
 }
 
-function adminAction(a) { alert("🛡️ المشرف سيف: تم تنفيذ " + a); }
+function adminAction(a) { alert("🛡️ المشرف Sofa: تم تنفيذ " + a); }
 
 function openSettings() {
     let n = prompt("تغيير الاسم:", currentUser.username);
