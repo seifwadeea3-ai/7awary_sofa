@@ -38,7 +38,7 @@
             </div>
 
             <nav class="main-nav">
-                <div class="nav-item" onclick="switchView('chat')">💬 الشات</div>
+                <div class="nav-item active" onclick="switchView('chat')">💬 الشات</div>
                 <div class="nav-item" onclick="switchView('groups')">👥 الجروبات</div>
                 <div class="nav-item" onclick="openStore()">🏪 المتجر</div>
                 <div class="nav-item" onclick="openRewards()">🎁 المكافآت <span id="rewardDot" class="dot"></span></div>
@@ -53,15 +53,24 @@
         </aside>
 
         <main class="main-content">
+            
             <div id="viewChat" class="view-panel">
                 <div class="chat-tabs">
-                    <button class="active">شات الجروبات</button>
-                    <button>شات خاص</button>
+                    <button class="tab-btn active" onclick="filterChat('groups')">شات الجروبات</button>
+                    <button class="tab-btn" onclick="filterChat('private')">شات خاص</button>
                 </div>
-                <div id="chatBox" class="chat-msgs"></div>
-                <div class="chat-input-area">
-                    <input type="text" id="chatInput" placeholder="اكتب منشن @ أو رسالة...">
-                    <button onclick="sendMessage()" class="btn-main">إرسال</button>
+                
+                <div id="chatBox" class="chat-msgs">
+                    </div>
+
+                <div class="chat-input-new-container">
+                    <div class="chat-input-wrapper">
+                        <button class="plus-btn" onclick="toggleExtraMenu()">＋</button>
+                        <input type="text" id="chatInput" placeholder="اكتب رسالتك هنا أو @ للمنشن..." onkeypress="handleKeyPress(event)">
+                        <button class="send-btn-orange" onclick="sendMessage()">
+                            <span class="send-icon">🚀</span>
+                        </button>
+                    </div>
                 </div>
             </div>
 
@@ -72,28 +81,38 @@
                 </div>
                 <div id="groupsGrid" class="groups-grid"></div>
             </div>
+            
+            <div id="viewAdmin" class="view-panel" style="display:none;">
+                <h3>لوحة تحكم المشرف العام</h3>
+                <div class="admin-tools">
+                    <button class="btn-danger" onclick="adminAction('disable_groups')">تعطيل كافة الجروبات</button>
+                    <button class="btn-danger" onclick="adminAction('clear_cache')">تصفير الذاكرة</button>
+                </div>
+            </div>
         </main>
 
         <aside class="sidebar-left">
             <h4>المتواجدون (<span id="totalOnline">0</span>)</h4>
             <div id="onlineList"></div>
-            <hr>
+            <hr class="separator">
             <h4>أحداث اليوم 📅</h4>
             <div class="daily-events" id="eventsList">
-                <p>لا توجد أحداث حالياً</p>
+                <div class="event-item">🎁 مكافآت مضاعفة</div>
+                <div class="event-item">🏆 مسابقة التفاعل</div>
             </div>
         </aside>
     </div>
 
     <div id="rewardModal" class="modal">
         <div class="modal-content">
+            <span class="close-modal" onclick="closeModal('rewardModal')">&times;</span>
             <h3>🎁 مركز المكافآت</h3>
             <div id="timerContainer">
                 <p>الوقت المتبقي للاستلام:</p>
-                <div id="countdown">00:00</div>
+                <div id="countdown" class="timer-style">00:00</div>
             </div>
-            <button id="claimBtn" disabled onclick="claimCoins()">استلام الكوينز</button>
-            <p class="info">معدلك الحالي: <span id="earnRate">1000</span> كوينز/ساعة</p>
+            <button id="claimBtn" class="btn-claim" disabled onclick="claimCoins()">استلام الكوينز</button>
+            <p class="info-text">معدلك الحالي: <span id="earnRate">1000</span> كوينز/ساعة</p>
         </div>
     </div>
 
