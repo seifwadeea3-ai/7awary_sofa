@@ -158,3 +158,40 @@ function simulateMessages(amount) {
     currentUser.messages += amount;
     updateUI();
 }
+// --- وظائف التفاعل للأزرار ---
+
+// 1. تفعيل أزرار لوحة الإدارة (its_sofa)
+function adminAction(actionType) {
+    // التحقق من أن المستخدم هو المشرف فعلاً
+    if (currentUser.username !== "its_sofa") {
+        alert("⚠️ عذراً، هذه الصلاحية للمشرف فقط.");
+        return;
+    }
+
+    if (actionType === 'stopChat') {
+        alert("🚫 تم إيقاف الشات مؤقتًا لجميع المستخدمين.");
+    } else if (actionType === 'deleteGroups') {
+        let confirmDel = confirm("هل أنت متأكد من حذف الجروبات المخالفة؟");
+        if(confirmDel) alert("✅ تم تنظيف النظام بنجاح.");
+    } else if (actionType === 'giveCoins') {
+        let amount = prompt("ما هو مقدار الكوينز المراد توزيعه كهدية؟");
+        if(amount) alert(`💰 جاري إرسال ${amount} كوينز لكل المستخدمين...`);
+    } else if (actionType === 'viewTax') {
+        alert("📈 سجل الضرائب: تم تحصيل 15% من جميع التحويلات اليوم بنجاح.");
+    }
+}
+
+// 2. تفعيل زر الإعدادات (لتغيير الاسم)
+// ابحث عن الزر الذي يحمل كلاس .settings-btn أو .btn-small وأضف له هذا الأمر
+function openSettings() {
+    let newName = prompt("اكتب اسمك الجديد:", currentUser.username);
+    if (newName) {
+        currentUser.username = newName;
+        updateUI(); // لتحديث الاسم فوراً في الواجهة
+    }
+}
+
+// 3. تفعيل زر المتجر
+function openShop() {
+    alert("🛒 المتجر مفتوح الآن!\n- شراء رتبة ذهبية (20,000)\n- شراء وسام الأسد (800)\n\n(قريباً سيتم إضافة واجهة الشراء الكاملة)");
+}
