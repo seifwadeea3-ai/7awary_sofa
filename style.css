@@ -11,8 +11,9 @@ body { margin: 0; font-family: 'Tajawal', sans-serif; background: var(--main-bg)
 .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.9); display: flex; align-items: center; justify-content: center; z-index: 1000; }
 .login-card { background: #fff; padding: 40px; border-radius: 15px; text-align: center; color: #333; width: 350px; }
 .logo-text { font-size: 28px; font-weight: bold; color: var(--accent); margin-bottom: 10px; }
-.input-field { width: 90%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 8px; outline: none; }
-.btn-login { width: 95%; padding: 12px; background: var(--accent); color: #fff; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; }
+.input-field { width: 90%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 8px; outline: none; box-sizing: border-box; }
+.btn-login { width: 95%; padding: 12px; background: var(--accent); color: #fff; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.3s; }
+.btn-login:hover { opacity: 0.9; }
 
 /* واجهة التطبيق */
 .app-container { display: flex; height: 100vh; overflow: hidden; }
@@ -20,8 +21,8 @@ body { margin: 0; font-family: 'Tajawal', sans-serif; background: var(--main-bg)
 .main-content { flex: 1; padding: 20px; overflow-y: auto; background: #0f1619; display: flex; flex-direction: column; }
 
 /* ستايل المشرف Sofa */
-.admin-name-style { color: var(--admin-color) !important; font-weight: 900; text-shadow: 0 0 10px #fff; font-size: 20px; background: #fff; padding: 5px; border-radius: 5px; text-align: center; }
-.badge-black { background: #000; color: #fff; padding: 3px 10px; border-radius: 4px; font-size: 11px; text-align: center; }
+.admin-name-style { color: var(--admin-color) !important; font-weight: 900; text-shadow: 0 0 10px #fff; font-size: 20px; background: #fff; padding: 5px; border-radius: 5px; text-align: center; display: block; margin-bottom: 5px; }
+.badge-black { background: #000; color: #fff; padding: 3px 10px; border-radius: 4px; font-size: 11px; text-align: center; display: inline-block; }
 .nav-admin { background: #000 !important; color: #fff !important; border: 1px solid #444; }
 
 /* الشات */
@@ -29,7 +30,7 @@ body { margin: 0; font-family: 'Tajawal', sans-serif; background: var(--main-bg)
 .msg-bubble { padding: 10px 15px; background: #2d3b43; border-radius: 12px; max-width: 80%; align-self: flex-start; }
 .msg-admin { background: #000; color: #fff; border-right: 4px solid var(--accent); align-self: flex-start; }
 .chat-input-area { display: flex; gap: 10px; }
-.chat-input-area input { flex: 1; padding: 12px; border-radius: 8px; border: none; background: #242f35; color: #fff; }
+.chat-input-area input { flex: 1; padding: 12px; border-radius: 8px; border: none; background: #242f35; color: #fff; outline: none; }
 
 /* الجروبات */
 .groups-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px; margin-top: 20px; }
