@@ -156,36 +156,38 @@ aside {
 @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-/* 1. حل مشكلة الضغط على الاسم */
-.msg-header {
-    position: relative !important;
-    z-index: 1000 !important; /* بيخلي الاسم فوق الفقاعة */
-    pointer-events: auto !important; /* بيخلي المتصفح يستجيب للمس */
-}
-
+/* حل مشكلة الضغط على الاسم - إجباري */
 .msg-header span {
     cursor: pointer !important;
-    display: inline-block;
+    position: relative !important;
+    z-index: 99999 !important; /* أعلى طبقة ممكنة */
+    pointer-events: all !important; /* إجبار المتصفح على الاستجابة */
+    display: inline-block !important;
+    padding: 5px; /* تكبير مساحة الضغط */
 }
 
-/* 2. حل مشكلة البار اللي بيختفي */
+/* حل مشكلة البار اللي بيختفي */
+.app-layout {
+    height: 100vh !important;
+    overflow: hidden !important;
+}
+
 .view-section {
-    display: flex;
-    flex-direction: column;
-    height: 100vh; /* بيخلي الشاشة كاملة ثابتة */
+    height: 100vh !important;
+    position: relative !important;
 }
 
 .chat-messages {
-    flex: 1; /* بيخلي الرسايل تاخد المساحة وتعمل سكرول */
+    height: calc(100vh - 120px) !important; /* تفريغ مساحة للبار */
     overflow-y: auto !important;
-    padding-bottom: 80px; /* مسافة عشان البار ميتغطاش */
+    display: flex !important;
+    flex-direction: column !important;
 }
 
 .chat-input-container {
-    position: absolute; /* بيثبته في مكانه */
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    z-index: 2000;
-    background: var(--bg-main); /* نفس لون خلفيتك */
+    position: fixed !important; /* تثبيت حقيقي */
+    bottom: 0 !important;
+    width: 100% !important;
+    background: var(--bg-main) !important;
+    z-index: 10000 !important;
 }
