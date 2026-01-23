@@ -3,20 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>7awary_sofa | لوحة التحكم</title>
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
+    <title>7awary_sofa | النظام المتكامل</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
-<body>
+<body class="dark-theme">
 
     <div id="loginScreen" class="overlay">
         <div class="login-card">
             <div class="logo-text">7awary_sofa</div>
-            <p>سجل دخولك للانضمام للسوفا</p>
-            <div class="sofa-form">
+            <div id="authTabs">
+                <button onclick="showAuth('login')">تسجيل دخول</button>
+                <button onclick="showAuth('register')">إنشاء حساب</button>
+                <button onclick="loginAsGuest()" class="btn-guest">دخول زائر</button>
+            </div>
+            
+            <div id="loginForm" class="sofa-form">
                 <input type="text" id="loginName" placeholder="اسم المستخدم" class="input-field">
                 <input type="password" id="loginPass" placeholder="كلمة المرور" class="input-field">
-                <button onclick="attemptLogin()" class="btn-login">دخول الآن</button>
+                <button onclick="attemptLogin()" class="btn-login">دخول</button>
             </div>
         </div>
     </div>
@@ -25,65 +30,71 @@
         
         <aside class="sidebar-right">
             <div class="profile-section">
-                <div id="userNameDisplay" style="font-weight: bold; font-size: 18px; margin-bottom: 5px;"></div>
-                <span id="adminBadge" class="badge-black" style="display:none;">المشرف العام</span>
-                
-                <div class="stats">
-                    <p>الرتبة: <span id="rankDisplay"></span></p>
-                    <p>الكوينز: <span id="coinDisplay"></span> 💰</p>
-                    <p>الرسايل: <span id="msgCurrent"></span></p>
+                <div class="avatar-container">
+                    <img id="userAvatar" src="default-avatar.png" alt="Avatar">
                 </div>
-
-                <div style="background: #0b0f11; padding: 10px; border-radius: 8px; margin: 10px 0; border: 1px solid #242f35;">
-                    <div style="font-size: 12px; color: var(--accent);">الهدايا: لا يوجد حالياً</div>
-                    <div style="font-size: 12px; margin-top:5px;">الأوسمة: 🇪🇬 🎖️</div>
-                </div>
-
-                <div class="progress-track"><div id="lvlBar" class="progress-fill"></div></div>
-                <small>المستوى: <span id="lvlVal">0</span></small>
+                <div id="userNameDisplay" class="user-name"></div>
+                <div id="userRankBadge" class="rank-badge">بدون رتبة</div>
             </div>
-            
-            <nav class="nav-menu">
-                <div class="nav-item" onclick="switchView('chat')">الدردشة العامة</div>
-                <div class="nav-item" onclick="switchView('groups')">المجموعات</div>
-                <div class="nav-item nav-admin" id="adminTab" style="display:none;" onclick="switchView('admin')">لوحة المشرف</div>
-                <div class="nav-item" onclick="openSettings()">الإعدادات</div>
+
+            <nav class="main-nav">
+                <div class="nav-item" onclick="switchView('chat')">💬 الشات</div>
+                <div class="nav-item" onclick="switchView('groups')">👥 الجروبات</div>
+                <div class="nav-item" onclick="openStore()">🏪 المتجر</div>
+                <div class="nav-item" onclick="openRewards()">🎁 المكافآت <span id="rewardDot" class="dot"></span></div>
+                <div class="nav-item" onclick="openNotifications()">🔔 الإشعارات <span id="notifCount" class="badge">0</span></div>
+                <div class="nav-item" onclick="openSettings()">⚙️ الإعدادات</div>
+                <div class="nav-item nav-admin" id="adminTab" style="display:none;" onclick="switchView('admin')">👑 الإدارة</div>
             </nav>
-            <div class="timer-box" style="text-align:center; margin-top:10px;">الهدية: <span id="countdown">00:00</span></div>
+
+            <div class="coin-balance">
+                <span id="coinDisplay">0</span> 🪙
+            </div>
         </aside>
 
         <main class="main-content">
             <div id="viewChat" class="view-panel">
-                <h3>الغرفة العامة</h3>
+                <div class="chat-tabs">
+                    <button class="active">شات الجروبات</button>
+                    <button>شات خاص</button>
+                </div>
                 <div id="chatBox" class="chat-msgs"></div>
                 <div class="chat-input-area">
-                    <input type="text" id="chatInput" placeholder="اكتب رسالتك هنا...">
+                    <input type="text" id="chatInput" placeholder="اكتب منشن @ أو رسالة...">
                     <button onclick="sendMessage()" class="btn-main">إرسال</button>
                 </div>
             </div>
 
             <div id="viewGroups" class="view-panel" style="display:none;">
-                <div style="display:flex; justify-content:space-between; align-items:center;">
-                    <h3>المجموعات</h3>
-                    <button class="btn-create" onclick="openCreateGroupModal()">+ إنشاء جروب</button>
+                <div class="view-header">
+                    <h3>المجموعات (<span id="groupsCount">0</span>)</h3>
+                    <button class="btn-create" onclick="createGroup()">+ إنشاء جروب (30k)</button>
                 </div>
                 <div id="groupsGrid" class="groups-grid"></div>
-            </div>
-
-            <div id="viewAdmin" class="view-panel" style="display:none;">
-                <h3>صلاحيات المشرف Sofa</h3>
-                <div class="admin-actions" style="display:flex; flex-direction:column; gap:10px;">
-                    <button class="btn-danger" onclick="adminAction('تعطيل الجروبات')">تعطيل كافة الجروبات</button>
-                    <button class="btn-danger" onclick="adminAction('حظر الـ IP')">حظر شامل للمخالفين</button>
-                    <button class="btn-danger" onclick="adminAction('تصفير الكوينز')">تصفير كوينز المشاغبين</button>
-                </div>
             </div>
         </main>
 
         <aside class="sidebar-left">
             <h4>المتواجدون (<span id="totalOnline">0</span>)</h4>
-            <div id="onlineList" style="display:flex; flex-direction:column; gap:15px; align-items:center;"></div>
+            <div id="onlineList"></div>
+            <hr>
+            <h4>أحداث اليوم 📅</h4>
+            <div class="daily-events" id="eventsList">
+                <p>لا توجد أحداث حالياً</p>
+            </div>
         </aside>
+    </div>
+
+    <div id="rewardModal" class="modal">
+        <div class="modal-content">
+            <h3>🎁 مركز المكافآت</h3>
+            <div id="timerContainer">
+                <p>الوقت المتبقي للاستلام:</p>
+                <div id="countdown">00:00</div>
+            </div>
+            <button id="claimBtn" disabled onclick="claimCoins()">استلام الكوينز</button>
+            <p class="info">معدلك الحالي: <span id="earnRate">1000</span> كوينز/ساعة</p>
+        </div>
     </div>
 
     <script src="script.js"></script>
