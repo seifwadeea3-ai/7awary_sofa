@@ -1,0 +1,143 @@
+const app = {
+    data: {
+        username: "زائر",
+        coins: 500,
+        rank: "none",
+        isGuest: true
+    },
+
+    init: function() {
+        // محاولة استرجاع بيانات محفوظة
+        const saved = localStorage.getItem('7awaryUser');
+        if (saved) {
+            this.data = JSON.parse(saved);
+            this.showMainApp();
+        }
+    },
+
+    save: function() {
+        if (!this.data.isGuest) {
+            localStorage.setItem('7awaryUser', JSON.stringify(this.data));
+        }
+        this.updateUI();
+    },
+
+    login: function() {
+        const name = document.getElementById('username-input').value;
+        if (name.length < 3) return alert("الاسم قصير جداً!");
+        
+        this.data.username = name;
+        this.data.isGuest = false;
+        this.data.coins = 1000; // هدية تسجيل دخول
+        this.save();
+        this.showMainApp();
+    },
+
+    guestLogin: function() {
+        this.data.username = "زائر_" + Math.floor(Math.random() * 9999);
+        this.data.isGuest = true;
+        this.data.coins = 0;
+        this.showMainApp();
+    },
+
+    showMainApp: function() {
+        document.getElementById('auth-screen').classList.remove('active-screen');
+        document.getElementById('main-app').classList.add('active-screen');
+        this.updateUI();
+    },
+
+    updateUI: function() {
+        // تحديث النصوص
+        document.getElementById('header-name').innerText = this.data.username;
+        document.getElementById('header-coins').innerText = this.data.coins;
+        document.getElementById('profile-name-display').innerText = this.data.username;
+        document.getElementById('profile-coins').innerText = this.data.coins;
+
+        // تحديث شكل الرتبة
+        const ranks = {
+            'none': { text: 'عضو جديد', color: '#888' },
+            'bronze': { text: 'برونزي 🥉', color: '#cd7f32' },
+            'silver': { text: 'فضي 🥈', color: '#00cec9' },
+            'gold': { text: 'ذهبي 👑', color: '#fdcb6e' }
+        };
+
+        const currentRank = ranks[this.data.rank];
+        document.getElementById('header-rank').innerText = currentRank.text;
+        document.getElementById('header-rank').style.color = currentRank.color;
+        document.getElementById('profile-rank-display').innerText = currentRank.text;
+        document.getElementById('profile-rank-display').style.background = currentRank.color;
+        document.getElementById('profile-rank-display').style.color = '#000';
+    },
+
+    switchTab: function(tabId, btnElement) {
+        // إخفاء كل التبويبات
+        document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active-tab'));
+        document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
+
+        // إظهار المطلوب
+        document.getElementById('tab-' + tabId).classList.add('active-tab');
+        btnElement.classList.add('active');
+    },
+
+    buyItem: function(rank, price) {
+        if (this.data.isGuest) return alert("سجل دخول أولاً للشراء!");
+        if (this.data.coins < price) return alert("عفواً، رصيدك لا يكفي!");
+
+        this.data.coins -= price;
+        this.data.rank = rank;
+        this.save();
+        alert(`مبروك! أنت الآن ${rank}`);
+    },
+
+    showTransferModal: function() {
+        if (this.data.isGuest) return alert("الزوار لا يمكنهم التحويل");
+        const amount = prompt("أدخل المبلغ المراد تحويله:");
+        const target = prompt("أدخل اسم المستلم:");
+        
+        if (amount && target) {
+            const val = parseInt(amount);
+            if (val > this.data.coins) return alert("رصيدك غير كافي");
+            
+            // حساب الضريبة 15%
+            const tax = Math.floor(val * 0.15);
+            const final = val - tax;
+            
+            this.data.coins -= val;
+            this.save();
+            alert(`تم تحويل ${final} إلى ${target}\n(تم خصم ضريبة ${tax})`);
+        }
+    },
+
+    enterRoom: function(roomName) {
+        document.getElementById('chat-room-title').innerText = roomName;
+        document.getElementById('chat-overlay').style.display = 'flex';
+    },
+
+    closeChat: function() {
+        document.getElementById('chat-overlay').style.display = 'none';
+    },
+
+    sendMessage: function() {
+        const input = document.getElementById('msg-input');
+        const text = input.value;
+        if (!text) return;
+
+        const box = document.getElementById('chat-messages');
+        
+        // رسالتي
+        box.innerHTML += `<div class="msg mine">${text}</div>`;
+        input.value = "";
+        box.scrollTop = box.scrollHeight;
+
+        // محاكاة رد تلقائي (عشان تحس ان الموقع حي)
+        setTimeout(() => {
+            box.innerHTML += `<div class="msg theirs">أهلاً يا ${this.data.username}! منور الشات ❤️</div>`;
+            box.scrollTop = box.scrollHeight;
+        }, 1000);
+    }
+};
+
+// تشغيل التطبيق عند التحميل
+window.onload = function() {
+    app.init();
+};

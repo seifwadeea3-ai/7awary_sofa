@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مجتمع حواري | 7awary Sofa</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="bg-animation"></div>
+
+    <section id="auth-screen" class="screen active-screen">
+        <div class="glass-card login-card">
+            <h1 class="logo-text">7awary Sofa</h1>
+            <p>مجتمع الدردشة العربي الأول</p>
+            
+            <div class="input-group">
+                <input type="text" id="username-input" placeholder="اسم المستخدم">
+            </div>
+            <div class="input-group">
+                <input type="password" id="password-input" placeholder="كلمة المرور (اختياري للزائر)">
+            </div>
+
+            <button class="btn-main" onclick="app.login()">🚀 دخول للمجتمع</button>
+            <button class="btn-ghost" onclick="app.guestLogin()">دخول كزائر</button>
+        </div>
+    </section>
+
+    <section id="main-app" class="screen">
+        
+        <header class="top-bar">
+            <div class="user-brief">
+                <div class="avatar-circle" id="header-avatar">👤</div>
+                <div>
+                    <h4 id="header-name">اسم المستخدم</h4>
+                    <span class="rank-badge" id="header-rank">عضو جديد</span>
+                </div>
+            </div>
+            <div class="coins-display">
+                <span id="header-coins">0</span> 🪙
+            </div>
+        </header>
+
+        <main class="content-area">
+            
+            <div id="tab-rooms" class="tab-content active-tab">
+                <h2 class="section-title">الغرف النشطة 🔥</h2>
+                <div class="room-card" onclick="app.enterRoom('الدردشة العامة')">
+                    <div class="room-icon">💬</div>
+                    <div class="room-info">
+                        <h3>الدردشة العامة</h3>
+                        <p>تجمع لكل الأعضاء</p>
+                    </div>
+                    <span class="online-status">120 🟢</span>
+                </div>
+                <div class="room-card" onclick="app.enterRoom('مسابقات وفعاليات')">
+                    <div class="room-icon">🏆</div>
+                    <div class="room-info">
+                        <h3>مسابقات كوينز</h3>
+                        <p>اربح الجوائز هنا</p>
+                    </div>
+                    <span class="online-status">45 🟢</span>
+                </div>
+            </div>
+
+            <div id="tab-store" class="tab-content">
+                <h2 class="section-title">متجر الرتب 💎</h2>
+                <div class="store-grid">
+                    <div class="store-card bronze-glow">
+                        <h3>برونزي 🥉</h3>
+                        <p>راتب: 1000/س</p>
+                        <button onclick="app.buyItem('bronze', 3000)">شراء (3000)</button>
+                    </div>
+                    <div class="store-card silver-glow">
+                        <h3>فضي 🥈</h3>
+                        <p>راتب: 2000/س</p>
+                        <button onclick="app.buyItem('silver', 8000)">شراء (8000)</button>
+                    </div>
+                    <div class="store-card gold-glow">
+                        <h3>ذهبي 👑</h3>
+                        <p>راتب: 3000/س</p>
+                        <button onclick="app.buyItem('gold', 20000)">شراء (20000)</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="tab-profile" class="tab-content">
+                <div class="glass-card profile-full">
+                    <div class="profile-header-center">
+                        <div class="avatar-large" id="profile-avatar">👤</div>
+                        <h2 id="profile-name-display">الاسم</h2>
+                        <div class="rank-tag" id="profile-rank-display">بلا رتبة</div>
+                    </div>
+                    
+                    <div class="stats-row">
+                        <div class="stat-box">
+                            <span>الكوينز</span>
+                            <strong id="profile-coins">0</strong>
+                        </div>
+                        <div class="stat-box">
+                            <span>ID</span>
+                            <strong>#8821</strong>
+                        </div>
+                    </div>
+
+                    <div class="actions-list">
+                        <button class="action-btn" onclick="app.showTransferModal()">💸 تحويل كوينز (ضريبة 15%)</button>
+                        <button class="action-btn logout" onclick="location.reload()">🚪 تسجيل خروج</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <nav class="bottom-nav">
+            <button class="nav-btn active" onclick="app.switchTab('rooms', this)">
+                <span class="icon">🏠</span>
+                <span>الغرف</span>
+            </button>
+            <button class="nav-btn" onclick="app.switchTab('store', this)">
+                <span class="icon">🏪</span>
+                <span>المتجر</span>
+            </button>
+            <button class="nav-btn" onclick="app.switchTab('profile', this)">
+                <span class="icon">👤</span>
+                <span>حسابي</span>
+            </button>
+        </nav>
+
+        <div id="chat-overlay" class="chat-modal">
+            <div class="chat-header">
+                <button onclick="app.closeChat()">🔙</button>
+                <span id="chat-room-title">الغرفة</span>
+                <span>⚙️</span>
+            </div>
+            <div id="chat-messages" class="chat-body">
+                <div class="msg system">مرحباً بك في الشات! التزم بالأدب.</div>
+            </div>
+            <div class="chat-input-area">
+                <input type="text" id="msg-input" placeholder="اكتب رسالتك...">
+                <button onclick="app.sendMessage()">➤</button>
+            </div>
+        </div>
+
+    </section>
+
+    <script src="script.js"></script>
+</body>
+</html>
